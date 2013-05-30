@@ -7,7 +7,7 @@ public class StarterGregor {
 	 */
 	public static void main(String[] args) {
 		VirtualMachine machine = new VirtualMachine(
-				"Linux - Ubuntu 13.04 - 64bit");
+				"Linux - Ubuntu 13.04 - 64bit", "test", "test");
 		machine.init();
 		machine.destroy();
 	}

@@ -24,6 +24,10 @@ public class VirtualMachine {
 
 	private String machineName;
 
+	private String username;
+
+	private String password;
+
 	// ----------------- Variables section
 	private VirtualBoxManager manager;
 
@@ -37,13 +41,16 @@ public class VirtualMachine {
 
 	private IGuestSession guestSession;
 
-	public VirtualMachine(String machineName) {
-		this(WEBSERVICE_URL, machineName);
+	public VirtualMachine(String machineName, String username, String password) {
+		this(WEBSERVICE_URL, machineName, username, password);
 	}
 
-	public VirtualMachine(String webserviceUrl, String machineName) {
+	public VirtualMachine(String webserviceUrl, String machineName,
+			String username, String password) {
 		this.webserviceUrl = webserviceUrl;
 		this.machineName = machineName;
+		this.username = username;
+		this.password = password;
 	}
 
 	public void init() {
@@ -85,8 +92,8 @@ public class VirtualMachine {
 
 		this.console = this.session.getConsole();
 		IGuest guest = this.console.getGuest();
-		this.guestSession = guest.createSession("test", "test", "",
-				"testSession");
+		this.guestSession = guest.createSession(this.username, this.password,
+				"", this.username + "-Session");
 	}
 
 	public void destroy() {
@@ -101,9 +108,9 @@ public class VirtualMachine {
 			}
 		}
 		if (this.manager != null) {
-//			if (this.session != null) {
-//				this.manager.closeMachineSession(this.session);
-//			}
+			// if (this.session != null) {
+			// this.manager.closeMachineSession(this.session);
+			// }
 			this.manager.disconnect();
 			this.manager.cleanup();
 		}
