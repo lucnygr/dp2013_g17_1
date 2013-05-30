@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=vboxjws.jar -DgroupId=org.virtualbox -DartifactId=vboxjws -Dversion=4.2.12 -Dpackaging=jar -Djavadoc=vboxjws-doc.jar -Dsource=vboxjws-src.jar
