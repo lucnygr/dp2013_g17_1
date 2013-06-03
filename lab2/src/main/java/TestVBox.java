@@ -15,11 +15,16 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.virtualbox_4_2.CPUPropertyType;
 import org.virtualbox_4_2.HWVirtExPropertyType;
+import org.virtualbox_4_2.Holder;
+import org.virtualbox_4_2.IDisplay;
 import org.virtualbox_4_2.IEvent;
 import org.virtualbox_4_2.IEventListener;
 import org.virtualbox_4_2.IEventSource;
@@ -244,7 +249,38 @@ public class TestVBox {
 	}
 
 
-	
+	static boolean takeScreenShot(VirtualBoxManager mgr, String filepath) {
+		boolean returnvalue = true;
+		IDisplay d = mgr.getSessionObject().getConsole().getDisplay();
+		
+		Holder<Long> width = new Holder<Long>();
+		Holder<Long> height = new Holder<Long>();
+		Holder<Long> bitsPerPixel = new Holder<Long>();
+		
+		
+		d.getScreenResolution(Long.valueOf(0), width, height, bitsPerPixel);
+		byte[] image = d.takeScreenShotPNGToArray(Long.valueOf(0), width.value, height.value);
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream("image.png");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		try {
+			fos.write(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+			returnvalue = false;
+		}
+		try {
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return returnvalue;
+	}
 
 	public static void main(String[] args) {
 		VirtualBoxManager mgr = VirtualBoxManager.createInstance(null);
@@ -302,6 +338,13 @@ public class TestVBox {
 				System.out.println("MouseEventHandler created");
 				mouseEventHandler.start();
 				System.out.println("MouseEventHandler started");
+				System.out.println("Press Enter to take screenshot");
+				
+				System.in.read();
+				System.in.read();
+				
+				takeScreenShot(mgr, "image.png");
+				System.out.println("Screenshot taken");
 				
 				System.out.println("Press Enter to stop");
 				
