@@ -1,6 +1,8 @@
-package at.ac.tuwien.digitalpreservation;
+package at.ac.tuwien.digitalpreservation.starter;
 
-public class StarterGregor {
+import at.ac.tuwien.digitalpreservation.VirtualMachine;
+
+public class StarterGregorLinux {
 
 	/**
 	 * @param args
