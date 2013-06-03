@@ -44,6 +44,9 @@ public class TestVBox {
 				System.out.println("mid=" + mcse.getMachineId());
 			break;
 		}
+		default:
+			System.out.println("type: default");
+			break;
 		}
 	}
 
@@ -154,7 +157,7 @@ public class TestVBox {
 
 	public static void main(String[] args) {
 		VirtualBoxManager mgr = VirtualBoxManager.createInstance(null);
-
+		
 		boolean ws = false;
 		String url = null;
 		String user = null;
@@ -170,7 +173,9 @@ public class TestVBox {
 			else if ("-passwd".equals(args[i]))
 				passwd = args[++i];
 		}
-
+		
+		System.out.println("-w:"+ws+" url:"+url+" user:"+user+" passwd:"+passwd);
+		
 		if (ws) {
 			try {
 				mgr.connect(url, user, passwd);
@@ -179,7 +184,7 @@ public class TestVBox {
 				System.out.println("Cannot connect, start webserver first!");
 			}
 		}
-
+		
 		try {
 			IVirtualBox vbox = mgr.getVBox();
 			if (vbox != null) {
@@ -200,7 +205,7 @@ public class TestVBox {
 		} catch (java.io.IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		if (ws) {
 			try {
 				mgr.disconnect();
@@ -210,7 +215,7 @@ public class TestVBox {
 		}
 
 		mgr.cleanup();
-
+		System.out.println("Exit");
 	}
 
 }
