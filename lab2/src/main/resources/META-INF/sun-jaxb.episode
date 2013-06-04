@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings version="2.1" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb">
+  <!--
+
+Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
+Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+Generiert: 2013.06.04 um 10:14:39 AM CEST 
+
+  -->
+  <jaxb:bindings scd="x-schema::">
+    <jaxb:schemaBindings map="false">
+      <jaxb:package name="at.ac.tuwien.digitalpreservation.config"/>
+    </jaxb:schemaBindings>
+    <jaxb:bindings scd="~GCAP">
+      <jaxb:class ref="at.ac.tuwien.digitalpreservation.config.GCAP"/>
+    </jaxb:bindings>
+    <jaxb:bindings scd="~mouseEvent">
+      <jaxb:class ref="at.ac.tuwien.digitalpreservation.config.MouseEvent"/>
+    </jaxb:bindings>
+    <jaxb:bindings scd="~recording">
+      <jaxb:class ref="at.ac.tuwien.digitalpreservation.config.Recording"/>
+    </jaxb:bindings>
+    <jaxb:bindings scd="~keyboardEvent">
+      <jaxb:class ref="at.ac.tuwien.digitalpreservation.config.KeyboardEvent"/>
+    </jaxb:bindings>
+  </jaxb:bindings>
+</jaxb:bindings>
+

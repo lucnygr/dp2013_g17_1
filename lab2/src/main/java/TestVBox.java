@@ -230,16 +230,16 @@ public class TestVBox {
 	 * @param vbox
 	 */
 	static void testStart(VirtualBoxManager mgr, IVirtualBox vbox) {
-		String m = vbox.getMachines().get(0).getName();
+		String m = vbox.getMachines().get(2).getName();
 		System.out.println("\nAttempting to start VM '" + m + "'");
-		System.out.println("Session:"+mgr.getVBox().getMachines().get(0).getSessionState().toString());
-		System.out.println("Session PID:"+mgr.getVBox().getMachines().get(0).getSessionPID().toString());
+		System.out.println("Session:"+mgr.getVBox().getMachines().get(2).getSessionState().toString());
+		System.out.println("Session PID:"+mgr.getVBox().getMachines().get(2).getSessionPID().toString());
 		
-		if (mgr.getVBox().getMachines().get(0).getState().equals(MachineState.Running) || mgr.getVBox().getMachines().get(0).getState().equals(MachineState.Paused)) {
-			mgr.getVBox().getMachines().get(0).launchVMProcess(mgr.getSessionObject(),"emergencystop",null);
+		if (mgr.getVBox().getMachines().get(2).getState().equals(MachineState.Running) || mgr.getVBox().getMachines().get(2).getState().equals(MachineState.Paused)) {
+			mgr.getVBox().getMachines().get(2).launchVMProcess(mgr.getSessionObject(),"emergencystop",null);
 		}
 		
-		mgr.getVBox().getMachines().get(0).launchVMProcess(mgr.getSessionObject(),"gui",null);
+		mgr.getVBox().getMachines().get(2).launchVMProcess(mgr.getSessionObject(),"gui",null);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd"
+	jxb:version="2.0">
+
+	<xs:annotation>
+		<xs:appinfo>
+			<jxb:schemaBindings>
+				<jxb:package name="at.ac.tuwien.digitalpreservation.config" />
+			</jxb:schemaBindings>
+		</xs:appinfo>
+	</xs:annotation>
+
+	<xs:element name="GCAP" type="GCAP"></xs:element>
+
+	<xs:complexType name="GCAP">
+		<xs:annotation>
+			<xs:appinfo>
+				<jxb:class name="GCAP" />
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="recordings" type="recording" minOccurs="1"
+				maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="recording">
+		<xs:annotation>
+			<xs:appinfo>
+				<jxb:class name="Recording" />
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="description" type="xs:string"></xs:element>
+			<!-- <xs:choice minOccurs="1" maxOccurs="unbounded"> <xs:element name="keyboardEvent" 
+				type="keyboardEvent" /> <xs:element name="mouseEvent" type="mouseEvent" /> 
+				</xs:choice> -->
+			<xs:element name="keyboardEvent" type="keyboardEvent" />
+			<xs:element name="mouseEvent" type="mouseEvent" />
+		</xs:sequence>
+		<xs:attribute name="takeScreenshotBeforeEvent" type="xs:boolean"></xs:attribute>
+		<xs:attribute name="takeScreenshotAfterEvent" type="xs:boolean"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="keyboardEvent">
+		<xs:annotation>
+			<xs:appinfo>
+				<jxb:class name="KeyboardEvent" />
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="timestamp" type="xs:dateTime" minOccurs="1"
+				maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="mouseEvent">
+		<xs:annotation>
+			<xs:appinfo>
+				<jxb:class name="MouseEvent" />
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="timestamp" type="xs:dateTime" minOccurs="1"
+				maxOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>
+
