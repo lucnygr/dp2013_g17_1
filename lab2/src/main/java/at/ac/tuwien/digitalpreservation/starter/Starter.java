@@ -1,5 +1,7 @@
 package at.ac.tuwien.digitalpreservation.starter;
 
+import at.ac.tuwien.digitalpreservation.VirtualMachine;
+
 public class Starter {
 
 	/**
@@ -25,10 +27,17 @@ public class Starter {
 				passwd = args[++i];
 		}
 		if (vm == null || url == null || user == null || passwd == null) {
-			vm = "";
-			url = "127.0.0.1:
+			System.out.println("Not enough parameters, using default parameters.");
+			vm = "Windows XP - SP 3 - 32bit";
+			url = "127.0.0.1:18083";
+			user = "test-vb";
+			passwd = "test";
 		}
-
+		System.out.println("-vm:"+vm+" url:"+url+" user:"+user+" passwd:"+passwd);
+		VirtualMachine machine = new VirtualMachine(
+				vm, user, passwd);
+		machine.init();
+		machine.destroy();
 	}
 
 }
