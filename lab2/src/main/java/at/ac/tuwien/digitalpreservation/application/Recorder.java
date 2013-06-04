@@ -1,4 +1,4 @@
-package at.ac.tuwien.digitalpreservation.recorder;
+package at.ac.tuwien.digitalpreservation.application;
 
 import java.io.File;
 import java.util.Arrays;
