@@ -1,10 +1,14 @@
 package at.ac.tuwien.digitalpreservation;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.virtualbox_4_2.Holder;
 import org.virtualbox_4_2.IConsole;
-import org.virtualbox_4_2.IGuest;
-import org.virtualbox_4_2.IGuestSession;
+import org.virtualbox_4_2.IDisplay;
 import org.virtualbox_4_2.IMachine;
 import org.virtualbox_4_2.IProgress;
 import org.virtualbox_4_2.ISession;
@@ -12,6 +16,9 @@ import org.virtualbox_4_2.IVirtualBox;
 import org.virtualbox_4_2.MachineState;
 import org.virtualbox_4_2.VBoxException;
 import org.virtualbox_4_2.VirtualBoxManager;
+
+import at.ac.tuwien.digitalpreservation.handler.KeyboardEventHandler;
+import at.ac.tuwien.digitalpreservation.handler.MouseEventHandler;
 
 public class VirtualMachine {
 
@@ -39,6 +46,11 @@ public class VirtualMachine {
 	private ISession session;
 
 	private IConsole console;
+
+	// ----------------- Event Thread section
+	private KeyboardEventThread keyboardEventThread;
+
+	private MouseEventThread mouseEventThread;
 
 	public VirtualMachine(String machineName, String username, String password) {
 		this(WEBSERVICE_URL, machineName, username, password);
@@ -76,8 +88,10 @@ public class VirtualMachine {
 		}
 
 		this.session = this.manager.getSessionObject();
-		if (this.machine.getState().equals(MachineState.Running) || this.machine.getState().equals(MachineState.Paused)) {
-			this.machine.launchVMProcess(this.manager.getSessionObject(),"emergencystop",null);
+		if (this.machine.getState().equals(MachineState.Running)
+				|| this.machine.getState().equals(MachineState.Paused)) {
+			this.machine.launchVMProcess(this.manager.getSessionObject(),
+					"emergencystop", null);
 		}
 		IProgress progress = this.machine.launchVMProcess(this.session, "gui",
 				"");
@@ -93,9 +107,21 @@ public class VirtualMachine {
 		}
 
 		this.console = this.session.getConsole();
+
+		this.keyboardEventThread = new KeyboardEventThread(this.console);
+		this.keyboardEventThread.start();
+
+		this.mouseEventThread = new MouseEventThread(this.console);
+		this.mouseEventThread.start();
 	}
 
 	public void destroy() {
+		if (this.mouseEventThread != null) {
+			this.mouseEventThread.close();
+		}
+		if (this.keyboardEventThread != null) {
+			this.keyboardEventThread.close();
+		}
 		if (this.console != null) {
 			IProgress progress = this.console.powerDown();
 			progress.waitForCompletion(30000);
@@ -116,5 +142,54 @@ public class VirtualMachine {
 		this.machine = null;
 		this.virtualBox = null;
 		this.manager = null;
+	}
+
+	public boolean takeScreenShot(String filepath) {
+		boolean returnvalue = true;
+		IDisplay d = this.console.getDisplay();
+
+		Holder<Long> width = new Holder<Long>();
+		Holder<Long> height = new Holder<Long>();
+		Holder<Long> bitsPerPixel = new Holder<Long>();
+
+		d.getScreenResolution(Long.valueOf(0), width, height, bitsPerPixel);
+		byte[] image = d.takeScreenShotPNGToArray(Long.valueOf(0), width.value,
+				height.value);
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream("image.png");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		}
+		try {
+			fos.write(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+			returnvalue = false;
+		}
+		try {
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return returnvalue;
+	}
+
+	public void addKeyboardEventHandler(KeyboardEventHandler handler) {
+		this.keyboardEventThread.addKeyboardEventHandler(handler);
+	}
+
+	public void removeKeyboardEventHandler(KeyboardEventHandler handler) {
+		this.keyboardEventThread.removeKeyboardEventHandler(handler);
+	}
+
+	public void addMouseEventHandler(MouseEventHandler handler) {
+		this.mouseEventThread.addMouseEventHandler(handler);
+	}
+
+	public void removeMouseEventHandler(MouseEventHandler handler) {
+		this.mouseEventThread.removeMouseEventHandler(handler);
 	}
 }
