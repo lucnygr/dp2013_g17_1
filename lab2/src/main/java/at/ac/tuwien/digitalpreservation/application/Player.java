@@ -22,6 +22,7 @@ public class Player {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
 	String name = "";
+	String gcapname = "";
 	VirtualMachine vm;
 	GCAP gcap = null;
 	List<Recording> recs = null;
@@ -34,7 +35,7 @@ public class Player {
 	 */
 	public Player(File gcap, VirtualMachine vm) {
 		this.vm = vm;
-
+		this.gcapname = gcap.getName();
 		// load file
 		this.gcap = ConfigurationUtils.unmarshal(gcap);
 		this.recs = this.gcap.getRecording();
@@ -63,18 +64,19 @@ public class Player {
 		try {
 			ReportGenerator report = new ReportGenerator("Report_" + name + "_"
 					+ System.currentTimeMillis());
-			report.init(name);
+			report.init(this.gcapname, name);
 			report.startRecording(rec.getDescription());
 
 			List<AbstractEvent> list = rec
 					.getKeyboardEventOrMouseEventOrScreenshotEvent();
 			long starttime = System.currentTimeMillis();
 			for (AbstractEvent ev : list) {
-				final long TIMEOUT = 10000;
+				final long TIMEOUT = 10000+(System.currentTimeMillis()) - starttime;
 				long offset = 0;
-				do {
-					offset = (new Date().getTime()) - starttime;
-				} while (offset < ev.getTimeOffset() || offset < TIMEOUT);
+				while (offset < ev.getTimeOffset() && offset < TIMEOUT) {
+					offset = (System.currentTimeMillis()) - starttime;
+				}
+				//System.out.println(offset + " " + ev.getTimeOffset());
 
 				switch (ev.getType()) {
 				case KEYBOARD_EVENT: {
