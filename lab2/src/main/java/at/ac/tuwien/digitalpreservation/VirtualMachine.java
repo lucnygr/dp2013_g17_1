@@ -9,6 +9,7 @@ import org.virtualbox_4_2.IMachine;
 import org.virtualbox_4_2.IProgress;
 import org.virtualbox_4_2.ISession;
 import org.virtualbox_4_2.IVirtualBox;
+import org.virtualbox_4_2.MachineState;
 import org.virtualbox_4_2.VBoxException;
 import org.virtualbox_4_2.VirtualBoxManager;
 
@@ -38,8 +39,6 @@ public class VirtualMachine {
 	private ISession session;
 
 	private IConsole console;
-
-	private IGuestSession guestSession;
 
 	public VirtualMachine(String machineName, String username, String password) {
 		this(WEBSERVICE_URL, machineName, username, password);
@@ -77,6 +76,9 @@ public class VirtualMachine {
 		}
 
 		this.session = this.manager.getSessionObject();
+		if (this.machine.getState().equals(MachineState.Running) || this.machine.getState().equals(MachineState.Paused)) {
+			this.machine.launchVMProcess(this.manager.getSessionObject(),"emergencystop",null);
+		}
 		IProgress progress = this.machine.launchVMProcess(this.session, "gui",
 				"");
 		progress.waitForCompletion(30000);
@@ -91,15 +93,9 @@ public class VirtualMachine {
 		}
 
 		this.console = this.session.getConsole();
-		IGuest guest = this.console.getGuest();
-		this.guestSession = guest.createSession(this.username, this.password,
-				"", this.username + "-Session");
 	}
 
 	public void destroy() {
-		if (this.guestSession != null) {
-			this.guestSession.close();
-		}
 		if (this.console != null) {
 			IProgress progress = this.console.powerDown();
 			progress.waitForCompletion(30000);
@@ -115,7 +111,6 @@ public class VirtualMachine {
 			this.manager.cleanup();
 		}
 
-		this.guestSession = null;
 		this.console = null;
 		this.session = null;
 		this.machine = null;
