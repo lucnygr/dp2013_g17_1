@@ -1,4 +1,4 @@
-package at.ac.tuwien.digitalpreservation;
+package at.ac.tuwien.digitalpreservation.config;
 
 public enum MouseButtonEnum {
 
