@@ -5,7 +5,7 @@
 Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-Generiert: 2013.06.04 um 10:14:39 AM CEST 
+Generiert: 2013.06.04 um 11:11:14 AM CEST 
 
   -->
   <jaxb:bindings scd="x-schema::">
@@ -20,6 +20,9 @@ Generiert: 2013.06.04 um 10:14:39 AM CEST
     </jaxb:bindings>
     <jaxb:bindings scd="~recording">
       <jaxb:class ref="at.ac.tuwien.digitalpreservation.config.Recording"/>
+    </jaxb:bindings>
+    <jaxb:bindings scd="~screenshotEvent">
+      <jaxb:class ref="at.ac.tuwien.digitalpreservation.config.ScreenshotEvent"/>
     </jaxb:bindings>
     <jaxb:bindings scd="~keyboardEvent">
       <jaxb:class ref="at.ac.tuwien.digitalpreservation.config.KeyboardEvent"/>

@@ -1,8 +1,8 @@
 //
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Ã„nderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.04 um 10:14:39 AM CEST 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2013.06.04 um 11:11:14 AM CEST 
 //
 
 
@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java-Klasse fÃ¼r GCAP complex type.
+ * <p>Java-Klasse für GCAP complex type.
  * 
  * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
  * 
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="recordings" type="{}recording" maxOccurs="unbounded"/>
+ *         &lt;element name="recording" type="{}recording" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GCAP", propOrder = {
-    "recordings"
+    "recording"
 })
 @XmlRootElement(name = "CGAP")
 public class GCAP
@@ -48,21 +48,21 @@ public class GCAP
 
     private final static long serialVersionUID = 1L;
     @XmlElement(required = true)
-    protected List<Recording> recordings;
+    protected List<Recording> recording;
 
     /**
-     * Gets the value of the recordings property.
+     * Gets the value of the recording property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the recordings property.
+     * This is why there is not a <CODE>set</CODE> method for the recording property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getRecordings().add(newItem);
+     *    getRecording().add(newItem);
      * </pre>
      * 
      * 
@@ -72,11 +72,11 @@ public class GCAP
      * 
      * 
      */
-    public List<Recording> getRecordings() {
-        if (recordings == null) {
-            recordings = new ArrayList<Recording>();
+    public List<Recording> getRecording() {
+        if (recording == null) {
+            recording = new ArrayList<Recording>();
         }
-        return this.recordings;
+        return this.recording;
     }
 
 }

@@ -1,14 +1,16 @@
 //
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
-// Ã„nderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.04 um 10:14:39 AM CEST 
+// Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+// Generiert: 2013.06.04 um 11:11:14 AM CEST 
 //
 
 
 package at.ac.tuwien.digitalpreservation.config;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java-Klasse fÃ¼r recording complex type.
+ * <p>Java-Klasse für recording complex type.
  * 
  * <p>Das folgende Schemafragment gibt den erwarteten Content an, der in dieser Klasse enthalten ist.
  * 
@@ -27,8 +29,9 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="keyboardEvent" type="{}keyboardEvent"/>
- *         &lt;element name="mouseEvent" type="{}mouseEvent"/>
+ *         &lt;element name="keyboardEvent" type="{}keyboardEvent" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="mouseEvent" type="{}mouseEvent" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="screenshotEvent" type="{}screenshotEvent" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;attribute name="takeScreenshotBeforeEvent" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *       &lt;attribute name="takeScreenshotAfterEvent" type="{http://www.w3.org/2001/XMLSchema}boolean" />
@@ -43,7 +46,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "recording", propOrder = {
     "description",
     "keyboardEvent",
-    "mouseEvent"
+    "mouseEvent",
+    "screenshotEvent"
 })
 public class Recording
     implements Serializable
@@ -52,10 +56,9 @@ public class Recording
     private final static long serialVersionUID = 1L;
     @XmlElement(required = true)
     protected String description;
-    @XmlElement(required = true)
-    protected KeyboardEvent keyboardEvent;
-    @XmlElement(required = true)
-    protected MouseEvent mouseEvent;
+    protected List<KeyboardEvent> keyboardEvent;
+    protected List<MouseEvent> mouseEvent;
+    protected List<ScreenshotEvent> screenshotEvent;
     @XmlAttribute(name = "takeScreenshotBeforeEvent")
     protected Boolean takeScreenshotBeforeEvent;
     @XmlAttribute(name = "takeScreenshotAfterEvent")
@@ -86,51 +89,90 @@ public class Recording
     }
 
     /**
-     * Ruft den Wert der keyboardEvent-Eigenschaft ab.
+     * Gets the value of the keyboardEvent property.
      * 
-     * @return
-     *     possible object is
-     *     {@link KeyboardEvent }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the keyboardEvent property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getKeyboardEvent().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link KeyboardEvent }
+     * 
+     * 
      */
-    public KeyboardEvent getKeyboardEvent() {
-        return keyboardEvent;
+    public List<KeyboardEvent> getKeyboardEvent() {
+        if (keyboardEvent == null) {
+            keyboardEvent = new ArrayList<KeyboardEvent>();
+        }
+        return this.keyboardEvent;
     }
 
     /**
-     * Legt den Wert der keyboardEvent-Eigenschaft fest.
+     * Gets the value of the mouseEvent property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link KeyboardEvent }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the mouseEvent property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getMouseEvent().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link MouseEvent }
+     * 
+     * 
      */
-    public void setKeyboardEvent(KeyboardEvent value) {
-        this.keyboardEvent = value;
+    public List<MouseEvent> getMouseEvent() {
+        if (mouseEvent == null) {
+            mouseEvent = new ArrayList<MouseEvent>();
+        }
+        return this.mouseEvent;
     }
 
     /**
-     * Ruft den Wert der mouseEvent-Eigenschaft ab.
+     * Gets the value of the screenshotEvent property.
      * 
-     * @return
-     *     possible object is
-     *     {@link MouseEvent }
-     *     
-     */
-    public MouseEvent getMouseEvent() {
-        return mouseEvent;
-    }
-
-    /**
-     * Legt den Wert der mouseEvent-Eigenschaft fest.
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the screenshotEvent property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link MouseEvent }
-     *     
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getScreenshotEvent().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link ScreenshotEvent }
+     * 
+     * 
      */
-    public void setMouseEvent(MouseEvent value) {
-        this.mouseEvent = value;
+    public List<ScreenshotEvent> getScreenshotEvent() {
+        if (screenshotEvent == null) {
+            screenshotEvent = new ArrayList<ScreenshotEvent>();
+        }
+        return this.screenshotEvent;
     }
 
     /**
