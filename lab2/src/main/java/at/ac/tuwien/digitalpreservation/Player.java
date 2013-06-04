@@ -6,6 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.ac.tuwien.digitalpreservation.config.AbstractEvent;
+import at.ac.tuwien.digitalpreservation.config.EventTypeEnum;
 import at.ac.tuwien.digitalpreservation.config.GCAP;
 import at.ac.tuwien.digitalpreservation.config.Recording;
 
@@ -44,6 +46,21 @@ public class Player {
 		}
 		
 		//TODO
+		List<AbstractEvent> list = rec.getKeyboardEventOrMouseEventOrScreenshotEvent();
+		for (AbstractEvent ev : list) {
+			switch(ev.getType()) {
+			case KEYBOARD_EVENT: {
+				
+			}
+			case MOUSE_EVENT: {
+				
+			}
+			case SCREENSHOT_EVENT: {
+				
+			}
+			default:
+			}
+		}
 	}
 
 }

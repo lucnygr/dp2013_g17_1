@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.virtualbox_4_2.Holder;
 import org.virtualbox_4_2.IConsole;
 import org.virtualbox_4_2.IDisplay;
+import org.virtualbox_4_2.IKeyboard;
 import org.virtualbox_4_2.IMachine;
+import org.virtualbox_4_2.IMouse;
 import org.virtualbox_4_2.IProgress;
 import org.virtualbox_4_2.ISession;
 import org.virtualbox_4_2.IVirtualBox;
@@ -17,6 +19,9 @@ import org.virtualbox_4_2.MachineState;
 import org.virtualbox_4_2.VBoxException;
 import org.virtualbox_4_2.VirtualBoxManager;
 
+import at.ac.tuwien.digitalpreservation.config.KeyboardEvent;
+import at.ac.tuwien.digitalpreservation.config.MouseButtonEnum;
+import at.ac.tuwien.digitalpreservation.config.MouseEvent;
 import at.ac.tuwien.digitalpreservation.handler.KeyboardEventHandler;
 import at.ac.tuwien.digitalpreservation.handler.MouseEventHandler;
 
@@ -157,7 +162,7 @@ public class VirtualMachine {
 				height.value);
 		FileOutputStream fos;
 		try {
-			fos = new FileOutputStream("image.png");
+			fos = new FileOutputStream(filepath);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return false;
@@ -191,5 +196,15 @@ public class VirtualMachine {
 
 	public void removeMouseEventHandler(MouseEventHandler handler) {
 		this.mouseEventThread.removeMouseEventHandler(handler);
+	}
+
+	public void putKeyboardEvent(KeyboardEvent ev) {
+		IKeyboard k = this.console.getKeyboard();
+		k.putScancodes(ev.getScancodes());
+	}
+	
+	public void putMouseEvent(MouseEvent ev) {
+		IMouse m = this.console.getMouse();
+		m.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(), ev.getZDelta(), ev.getWDelta(), MouseButtonEnum.getClicked(ev.getMouseButtons()));
 	}
 }
