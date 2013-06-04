@@ -44,13 +44,13 @@ import org.virtualbox_4_2.VBoxException;
 import org.virtualbox_4_2.VirtualBoxManager;
 
 public class TestVBox {
-	
+
 	static class EventHandler extends Thread {
 		private VirtualBoxManager mgr = null;
 		private IEventSource es = null;
 		private IEventListener listener = null;
 		private boolean running = true;
-		
+
 		EventHandler(VirtualBoxManager mgr) {
 			this.mgr = mgr;
 			this.es = this.mgr.getVBox().getEventSource();
@@ -87,14 +87,14 @@ public class TestVBox {
 					//System.out.println("mid=" + mcse.getMachineId());
 					//System.out.println("State=" + mcse.getState().toString());
 				}
-					
+
 				break;
 			}
 			case OnSessionStateChanged: {
 				ISessionStateChangedEvent cev = ISessionStateChangedEvent.queryInterface(ev);
 				//System.out.println(cev.getState().toString());
 			}
-			
+
 			case OnGuestPropertyChanged: {
 				IGuestPropertyChangedEvent cev = IGuestPropertyChangedEvent.queryInterface(ev);
 				//System.out.println(cev.getName());
@@ -105,13 +105,13 @@ public class TestVBox {
 			}
 		}
 	}
-	
+
 	static class KeyBoardEventHandler extends Thread {
 		private VirtualBoxManager mgr = null;
 		private IEventSource es = null;
 		private IEventListener listener = null;
 		private boolean running = true;
-		
+
 		KeyBoardEventHandler(VirtualBoxManager mgr) {
 			this.mgr = mgr;
 			this.es = this.mgr.getSessionObject().getConsole().getKeyboard().getEventSource();
@@ -119,12 +119,12 @@ public class TestVBox {
 			es.registerListener(listener, Arrays.asList(VBoxEventType.Any), false);
 			System.out.println("KeyBoardEventHandler initialized");
 		}
-		
+
 		public void close() {
 			this.running = false;
 			System.out.println("Closing KeyBoardEventHandler");
 		}
-		
+
 		public void run() {
 			System.out.println("Starting KeyBoardEventHandler");
 			while(running) {
@@ -150,13 +150,13 @@ public class TestVBox {
 			}
 		}
 	}
-	
+
 	static class MouseEventHandler extends Thread {
 		private VirtualBoxManager mgr = null;
 		private IEventSource es = null;
 		private IEventListener listener = null;
 		private boolean running = true;
-		
+
 		MouseEventHandler(VirtualBoxManager mgr) {
 			this.mgr = mgr;
 			this.es = this.mgr.getSessionObject().getConsole().getMouse().getEventSource();
@@ -164,12 +164,12 @@ public class TestVBox {
 			es.registerListener(listener, Arrays.asList(VBoxEventType.Any), false);
 			System.out.println("MouseEventHandler initialized");
 		}
-		
+
 		public void close() {
 			this.running = false;
 			System.out.println("Closing MouseEventHandler");
 		}
-		
+
 		public void run() {
 			System.out.println("Starting MouseEventHandler");
 			while(running) {
@@ -195,7 +195,7 @@ public class TestVBox {
 			}
 		}
 	}
-	
+
 	static class Recorder extends Thread {
 		enum LineType {
 			Invalid,
@@ -208,7 +208,7 @@ public class TestVBox {
 				public LineType type = LineType.Invalid;
 				public Object content = null;
 				REvent() {
-					
+
 				}
 				REvent(LineType type, Object content) {
 					this.type = type;
@@ -216,16 +216,16 @@ public class TestVBox {
 				}
 			}
 			private String name = null;
-			
+
 			private ArrayList<REvent> list = new ArrayList<REvent>();
-			
+
 			String getName() {
 				return name;
 			}
 			Recording(String name) {
 				this.name = name;
 			}
-			
+
 			void add(REvent e) {
 				this.list.add(e);
 			}
@@ -235,7 +235,7 @@ public class TestVBox {
 		}
 		static class Serializer {
 			static final String DELIMITER = " ";
-			
+
 			static boolean parseLine(String line, Recording rec) {
 				StringTokenizer tok = new StringTokenizer(line, DELIMITER);
 				if(!tok.hasMoreTokens()) {
@@ -243,7 +243,8 @@ public class TestVBox {
 				}
 				String firstToken = tok.nextToken();
 				if (firstToken.equals(LineType.MouseEvent.toString())) {
-					return LineType.MouseEvent;
+					return false; //TODO
+					//return LineType.MouseEvent;
 				} else if (firstToken.equals(LineType.KeyboardEvent.toString())) {
 					if (!tok.hasMoreTokens()) {
 						return false;
@@ -260,12 +261,15 @@ public class TestVBox {
 					rec.add(new Recording.REvent(LineType.KeyboardEvent, l));
 					return true;
 				} else if (firstToken.equals(LineType.ScreenShotEvent.toString())) {
-					return LineType.ScreenShotEvent;
+					return false; //TODO
+					//return LineType.ScreenShotEvent;
 				} else {
-					return LineType.Invalid;
+					return false; //TODO
+					//return LineType.Invalid;
 				}
-				
+
 			}
+
 			static List<Integer> StringToGuestKeyboardEvent(String line) {
 				return null;
 			}
@@ -273,17 +277,17 @@ public class TestVBox {
 				return null;
 			}
 		}
-		
+
 		private boolean ready = false;
 		private boolean running = true;
 		private VirtualBoxManager mgr = null;
 		private String filename = null;
-		
+
 		IEventSource mouseEs = null;
 		IEventSource keyboardEs = null;
 		private IEventListener mouseListener = null;
 		private IEventListener keyboardListener = null;
-		
+
 		Recorder(VirtualBoxManager mgr, String filename) {
 			this.mgr = mgr;
 			this.reset(filename);
@@ -291,44 +295,44 @@ public class TestVBox {
 		public String getFilename() {
 			return this.filename;
 		}
-		
+
 		public void reset() {
 			this.deset();
-			
+
 			this.mouseEs = this.mgr.getSessionObject().getConsole().getMouse().getEventSource();
 			mouseListener = this.mouseEs.createListener();
 			mouseEs.registerListener(mouseListener, Arrays.asList(VBoxEventType.Any), false);
-			
+
 			this.keyboardEs = this.mgr.getSessionObject().getConsole().getKeyboard().getEventSource();
 			mouseListener = this.keyboardEs.createListener();
 			keyboardEs.registerListener(mouseListener, Arrays.asList(VBoxEventType.Any), false);
-			
+
 			this.running = false;
 			this.ready = true;
 		}
-		
+
 		private void deset() {
 			if (mouseEs != null && mouseListener != null) {
 				this.mouseEs.unregisterListener(mouseListener);
 				this.mouseEs = null;
 				this.mouseListener = null;
 			}
-			
+
 			if (keyboardEs != null && keyboardListener != null) {
 				this.keyboardEs.unregisterListener(keyboardListener);
 				this.keyboardEs = null;
 				this.keyboardListener = null;
 			}
-			
+
 			this.ready = false;
 			this.running = false;
 		}
-		
+
 		public void reset(String filename) {
 			this.filename = filename;
 			this.reset();
 		}
-		
+
 		public void run() {
 			// actually record till the stop signal is given
 			while(running) {
@@ -338,7 +342,7 @@ public class TestVBox {
 					handleMouseEvent(mev);
 					mouseEs.eventProcessed(mouseListener, mev);
 				}
-				
+
 				IEvent kev = keyboardEs.getEvent(keyboardListener, 5);
 				if (kev != null) {
 					handleKeyBoardEvent(kev);
@@ -346,15 +350,15 @@ public class TestVBox {
 				}
 			}
 		}
-		
+
 		private void handleKeyBoardEvent(IEvent ev) {
-			
+
 		}
-		
+
 		private void handleMouseEvent(IEvent ev) {
-			
+
 		}
-		
+
 		public void startRecording() {
 			if (!ready) {
 				System.out.println("The Recorder is not ready. Reset it");
@@ -362,18 +366,18 @@ public class TestVBox {
 			}
 			this.start();
 		}
-		
+
 		public void stopRecording() {
 			this.running = false;
 			this.ready = false;
 		}
-		
+
 		static void playRecording(VirtualBoxManager mgr, String filename) {
 			// play a previously recorded file
 		}
 	}
-	
-	
+
+
 	public static EventHandler eventHandler = null;
 	public static KeyBoardEventHandler keyboardEventHandler = null;
 	public static MouseEventHandler mouseEventHandler = null;
@@ -418,14 +422,13 @@ public class TestVBox {
 		System.out.println("\nAttempting to start VM '" + m + "'");
 		System.out.println("Session:"+mgr.getVBox().getMachines().get(0).getSessionState().toString());
 		System.out.println("Session PID:"+mgr.getVBox().getMachines().get(0).getSessionPID().toString());
-		
+
 		if (mgr.getVBox().getMachines().get(0).getState().equals(MachineState.Running) || mgr.getVBox().getMachines().get(0).getState().equals(MachineState.Paused)) {
 			mgr.getVBox().getMachines().get(0).launchVMProcess(mgr.getSessionObject(),"emergencystop",null);
-		if (mgr.getVBox().getMachines().get(2).getState().equals(MachineState.Running) || mgr.getVBox().getMachines().get(2).getState().equals(MachineState.Paused)) {
-			mgr.getVBox().getMachines().get(2).launchVMProcess(mgr.getSessionObject(),"emergencystop",null);
 		}
 		
-		mgr.getVBox().getMachines().get(2).launchVMProcess(mgr.getSessionObject(),"gui",null);
+		mgr.getVBox().getMachines().get(0).launchVMProcess(mgr.getSessionObject(),"gui",null);
+		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -434,16 +437,15 @@ public class TestVBox {
 		}
 	}
 
-
 	static boolean takeScreenShot(VirtualBoxManager mgr, String filepath) {
 		boolean returnvalue = true;
 		IDisplay d = mgr.getSessionObject().getConsole().getDisplay();
-		
+
 		Holder<Long> width = new Holder<Long>();
 		Holder<Long> height = new Holder<Long>();
 		Holder<Long> bitsPerPixel = new Holder<Long>();
-		
-		
+
+
 		d.getScreenResolution(Long.valueOf(0), width, height, bitsPerPixel);
 		byte[] image = d.takeScreenShotPNGToArray(Long.valueOf(0), width.value, height.value);
 		FileOutputStream fos;
@@ -470,7 +472,7 @@ public class TestVBox {
 
 	public static void main(String[] args) {
 		VirtualBoxManager mgr = VirtualBoxManager.createInstance(null);
-		
+
 		boolean ws = false;
 		String url = null;
 		String user = null;
@@ -486,9 +488,9 @@ public class TestVBox {
 			else if ("-passwd".equals(args[i]))
 				passwd = args[++i];
 		}
-		
+
 		System.out.println("-w:"+ws+" url:"+url+" user:"+user+" passwd:"+passwd);
-		
+
 		if (ws) {
 			try {
 				mgr.connect(url, user, passwd);
@@ -497,7 +499,7 @@ public class TestVBox {
 				System.out.println("Cannot connect, start webserver first!");
 			}
 		}
-		
+
 		try {
 			System.out.println("VirtualBox version: " + mgr.getVBox().getVersion() + "\n");
 			//testEnumeration(mgr, vbox);
@@ -505,44 +507,44 @@ public class TestVBox {
 			testStart(mgr);
 			System.out.println("Session:"+mgr.getVBox().getMachines().get(0).getSessionState().toString());
 			System.out.println("Session PID:"+mgr.getVBox().getMachines().get(0).getSessionPID().toString());
-			
+
 			System.out.println("Box started");
 			eventHandler = new EventHandler(mgr);
 			System.out.println("EventHandler created");
 			eventHandler.start();
 			System.out.println("EventHandler started");
-			
+
 			keyboardEventHandler = new KeyBoardEventHandler(mgr);
 			System.out.println("KeyBoardEventHandler created");
 			keyboardEventHandler.start();
 			System.out.println("KeyBoardEventHandler started");
-			
+
 			mouseEventHandler = new MouseEventHandler(mgr);
 			System.out.println("MouseEventHandler created");
 			mouseEventHandler.start();
 			System.out.println("MouseEventHandler started");
 			System.out.println("Press Enter to take screenshot");
-			
+
 			System.in.read();
 			System.in.read();
-			
+
 			takeScreenShot(mgr, "image.png");
 			System.out.println("Screenshot taken");
-			
+
 			System.out.println("Press Enter to stop");
-			
+
 			System.in.read();
 			System.in.read();
-		
+
 			System.out.println("Stopping EventHandler");
 			eventHandler.close();
-			
+
 			System.out.println("Stopping KeyboardEventHandler");
 			keyboardEventHandler.close();
-			
+
 			System.out.println("Stopping MouseEventHandler");
 			mouseEventHandler.close();
-			
+
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -550,7 +552,7 @@ public class TestVBox {
 				e.printStackTrace();
 			}
 			mgr.getSessionObject().getConsole().powerButton();
-			
+
 			System.out.println("done, press Enter...");
 			System.in.read();
 		} catch (VBoxException e) {
@@ -560,7 +562,7 @@ public class TestVBox {
 		} catch (java.io.IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		if (ws) {
 			try {
 				mgr.disconnect();
