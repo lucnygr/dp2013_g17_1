@@ -9,6 +9,7 @@ import org.virtualbox_4_2.IGuestMouseEvent;
 
 import at.ac.tuwien.digitalpreservation.ConfigurationUtils;
 import at.ac.tuwien.digitalpreservation.VirtualMachine;
+import at.ac.tuwien.digitalpreservation.config.EventTypeEnum;
 import at.ac.tuwien.digitalpreservation.config.GCAP;
 import at.ac.tuwien.digitalpreservation.config.KeyboardEvent;
 import at.ac.tuwien.digitalpreservation.config.MouseButtonEnum;
@@ -58,13 +59,16 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		this.virtualMachine.addMouseEventHandler(this);
 	}
 
-	public void stopRecording(String description) {
+	public void stopRecording() {
 		this.virtualMachine.removeKeyboardEventHandler(this);
 		this.virtualMachine.removeMouseEventHandler(this);
-		this.currentRecording.setDescription(description);
 		this.gcap.getRecording().add(this.currentRecording);
-		this.recordingStart = 0;
+	}
+
+	public void finishRecording(String description) {
+		this.currentRecording.setDescription(description);
 		this.currentRecording = null;
+		this.recordingStart = 0;
 	}
 
 	@Override
@@ -72,6 +76,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		KeyboardEvent ke = new KeyboardEvent();
 		ke.setTimeOffset(System.currentTimeMillis() - this.recordingStart);
 		ke.getScancodes().addAll(event.getScancodes());
+		ke.setType(EventTypeEnum.KEYBOARD_EVENT);
 		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
 				.add(ke);
 	}
@@ -86,6 +91,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		me.setZDelta(event.getZ());
 		me.getMouseButtons().addAll(
 				MouseButtonEnum.getClicked(event.getButtons()));
+		me.setType(EventTypeEnum.MOUSE_EVENT);
 		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
 				.add(me);
 	}
