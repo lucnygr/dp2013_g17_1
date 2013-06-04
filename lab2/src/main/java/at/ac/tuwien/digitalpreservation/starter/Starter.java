@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import at.ac.tuwien.digitalpreservation.Player;
@@ -62,6 +63,7 @@ public class Starter {
 			}
 			if (line.equalsIgnoreCase("exit")) {
 				running = false;
+				break;
 			} else if (line.equalsIgnoreCase("help")) {
 				System.out.println("Valid commands:\n" + "run <gcapname> <recording>\n"
 						+ "record <newgcapname>\n" + "exit");
@@ -80,15 +82,43 @@ public class Starter {
 				}
 
 				String name = tok.nextToken();
-
-				if (!tok.hasMoreTokens()) {
-					System.out.println("Invalid command");
+				File gcap = new File("src/test/resources/" + name + ".xml");
+				if (!gcap.isFile()) {
+					System.out.println("There is no GCAP named \""+name+"\"");
 					continue;
 				}
-				String desc = tok.nextToken();
-				
-				playRecording(machine, new File("src/test/resources/" + name + ".xml"), desc);
-				System.out.println("done");
+				Player player = new Player(gcap, machine);
+				List<String> recs = player.getRecordingTitles();
+				while(true) {
+					System.out.println("Choose one of the following recordings:");
+					for (String s : recs) {
+						System.out.println("  "+s);
+					}
+					System.out.println("Enter \"back\" to go back to the main menu.");
+					String choice;
+					try {
+						choice = in.readLine();
+					} catch (IOException e) {
+						e.printStackTrace();
+						break;
+					}
+					if (choice.equalsIgnoreCase("back")) {
+						break;
+					}
+					boolean valid = false;
+					for (String s : recs) {
+						if (s.equalsIgnoreCase(choice)) {
+							player.play(s);
+							System.out.println("done");
+							valid = true;
+							break;
+						}
+					}
+					if (!valid) {
+						System.out.println("There is no such recording");
+					}
+					
+				}
 				continue;
 			} else if (command.equalsIgnoreCase("record")) {
 				if (!tok.hasMoreTokens()) {
@@ -142,8 +172,7 @@ public class Starter {
 	}
 
 	static boolean playRecording(VirtualMachine machine, File gcap, String recDescription) {
-		Player player = new Player(gcap, machine);
-		player.play(recDescription);
+		
 		return false;
 	}
 

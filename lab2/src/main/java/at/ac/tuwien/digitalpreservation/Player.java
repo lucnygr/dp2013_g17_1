@@ -1,6 +1,7 @@
 package at.ac.tuwien.digitalpreservation;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,15 @@ public class Player {
 		this.gcap = ConfigurationUtils.unmarshal(gcap);
 		this.recs = this.gcap.getRecording();
 	}
+	
+	public List<String> getRecordingTitles() {
+		ArrayList<String> out = new ArrayList<String>();
+		for (Recording r : recs) {
+			out.add(r.getDescription());
+		}
+		return out;
+	}
+	
 	public void play(String name) {
 		Recording rec = null;
 		for (Recording r : recs) {
