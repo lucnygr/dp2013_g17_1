@@ -21,6 +21,7 @@
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
 			<xs:element name="recording" type="recording" minOccurs="1"
 				maxOccurs="unbounded"></xs:element>
 		</xs:sequence>

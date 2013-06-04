@@ -62,6 +62,7 @@ public class Player {
 		}
 
 		try {
+			report.init(name);
 			ReportGenerator report = new ReportGenerator("Report_" + name + "_"
 					+ System.currentTimeMillis());
 			report.init(this.gcapname, name);
