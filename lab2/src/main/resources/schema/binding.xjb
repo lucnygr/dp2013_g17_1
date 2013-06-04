@@ -11,6 +11,11 @@
 			parseMethod="at.ac.tuwien.digitalpreservation.config.MouseButtonEnum.parseMouseButton"
 			printMethod="at.ac.tuwien.digitalpreservation.config.MouseButtonEnum.printMouseButton" />
 
+		<jaxb:javaType name="at.ac.tuwien.digitalpreservation.config.EventTypeEnum"
+			xmlType="eventType"
+			parseMethod="at.ac.tuwien.digitalpreservation.config.EventTypeEnum.parseEventType"
+			printMethod="at.ac.tuwien.digitalpreservation.config.EventTypeEnum.printEventType" />
+
 		<!-- Force all classes implements Serializable -->
 		<xjc:serializable uid="1" />
 	</jaxb:globalBindings>
