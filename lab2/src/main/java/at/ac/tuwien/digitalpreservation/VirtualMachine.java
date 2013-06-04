@@ -127,6 +127,11 @@ public class VirtualMachine {
 		if (this.keyboardEventThread != null) {
 			this.keyboardEventThread.close();
 		}
+		try {
+			// wait for the event threads to close
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 		if (this.console != null) {
 			IProgress progress = this.console.powerDown();
 			progress.waitForCompletion(30000);
@@ -202,9 +207,11 @@ public class VirtualMachine {
 		IKeyboard k = this.console.getKeyboard();
 		k.putScancodes(ev.getScancodes());
 	}
-	
+
 	public void putMouseEvent(MouseEvent ev) {
 		IMouse m = this.console.getMouse();
-		m.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(), ev.getZDelta(), ev.getWDelta(), MouseButtonEnum.getClicked(ev.getMouseButtons()));
+		m.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(),
+				ev.getZDelta(), ev.getWDelta(),
+				MouseButtonEnum.getClicked(ev.getMouseButtons()));
 	}
 }
