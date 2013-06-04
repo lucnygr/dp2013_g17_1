@@ -1,6 +1,7 @@
 package at.ac.tuwien.digitalpreservation;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import at.ac.tuwien.digitalpreservation.config.AbstractEvent;
 import at.ac.tuwien.digitalpreservation.config.EventTypeEnum;
 import at.ac.tuwien.digitalpreservation.config.GCAP;
+import at.ac.tuwien.digitalpreservation.config.KeyboardEvent;
+import at.ac.tuwien.digitalpreservation.config.MouseEvent;
 import at.ac.tuwien.digitalpreservation.config.Recording;
 
 public class Player {
@@ -47,16 +50,21 @@ public class Player {
 		
 		//TODO
 		List<AbstractEvent> list = rec.getKeyboardEventOrMouseEventOrScreenshotEvent();
+		long starttime = new Date().getTime();
 		for (AbstractEvent ev : list) {
+			
+			while((new Date().getTime())-starttime < ev.getOffset()) {
+
+			}
 			switch(ev.getType()) {
 			case KEYBOARD_EVENT: {
-				
+				vm.putKeyboardEvent((KeyboardEvent)ev);
 			}
 			case MOUSE_EVENT: {
-				
+				vm.putMouseEvent((MouseEvent)ev);
 			}
 			case SCREENSHOT_EVENT: {
-				
+				vm.takeScreenShot("test.png");
 			}
 			default:
 			}
