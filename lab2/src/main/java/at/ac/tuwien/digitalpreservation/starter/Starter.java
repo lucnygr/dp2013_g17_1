@@ -91,19 +91,31 @@ public class Starter {
 				String name = tok.nextToken();
 
 				Recorder recorder = new Recorder(machine);
-				recorder.startRecording();
 
-				System.out.println("Click enter to stop recording");
-				try {
-					in.readLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				while (true) {
+					recorder.startRecording();
+					System.out.println("Press enter to stop recording");
+					try {
+						in.readLine();
+						recorder.stopRecording();
+
+						System.out
+								.println("Enter description of the recording: ");
+						line = in.readLine();
+						recorder.finishRecording(line);
+
+						System.out.println("Continue recording (/exit) [] ?");
+						line = in.readLine();
+						if ("exit".equalsIgnoreCase(line)) {
+							break;
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-
-				recorder.stopRecording(name);
-				recorder.saveGCAP(new File("src/test/resources/" + name
-						+ ".xml"));
+				File saveFile = new File("src/test/resources/" + name + ".xml");
+				System.out.println("Save recordings to " + saveFile);
+				recorder.saveGCAP(saveFile);
 
 				continue;
 			} else {
