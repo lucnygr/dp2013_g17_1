@@ -58,12 +58,12 @@ public class Player {
 		}
 
 		List<AbstractEvent> list = rec.getKeyboardEventOrMouseEventOrScreenshotEvent();
-		long starttime = new Date().getTime();
+		long starttime = System.currentTimeMillis();
 		for (AbstractEvent ev : list) {
 			final long TIMEOUT = 10000;
 			long offset = 0;
 			do {
-				offset = (new Date().getTime())-starttime;
+				offset = System.currentTimeMillis()-starttime;
 			} while(offset < ev.getTimeOffset() || offset < TIMEOUT);
 			
 			switch(ev.getType()) {
