@@ -66,7 +66,7 @@ public class Starter {
 				running = false;
 				break;
 			} else if (line.equalsIgnoreCase("help")) {
-				System.out.println("Valid commands:\n" + "run <gcapname> <recording>\n"
+				System.out.println("Valid commands:\n" + "run <gcapname>\n"
 						+ "record <newgcapname>\n" + "exit");
 				continue;
 			}
@@ -132,6 +132,12 @@ public class Starter {
 				Recorder recorder = new Recorder(machine);
 
 				while (true) {
+					System.out.println("Press enter to start recording");
+					try {
+						in.readLine();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					recorder.startRecording();
 					System.out.println("Press enter to stop recording");
 					try {
@@ -142,12 +148,13 @@ public class Starter {
 								.println("Enter description of the recording: ");
 						line = in.readLine();
 						recorder.finishRecording(line);
-
-						System.out.println("Continue recording (/exit) [] ?");
+						
+						System.out.println("Continue recording (Y/N)");
 						line = in.readLine();
-						if ("exit".equalsIgnoreCase(line)) {
+						if ("n".equalsIgnoreCase(line)) {
 							break;
-						}
+						} 
+						
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
