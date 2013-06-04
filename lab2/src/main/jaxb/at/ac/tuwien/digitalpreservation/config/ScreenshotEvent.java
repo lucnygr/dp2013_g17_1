@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.04 um 03:21:07 PM CEST 
+// Generiert: 2013.06.04 um 03:51:32 PM CEST 
 //
 
 
@@ -23,9 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType name="screenshotEvent">
  *   &lt;complexContent>
  *     &lt;extension base="{}abstractEvent">
- *       &lt;sequence>
- *         &lt;element name="timeOffset" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -34,31 +31,12 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "screenshotEvent", propOrder = {
-    "timeOffset"
-})
+@XmlType(name = "screenshotEvent")
 public class ScreenshotEvent
     extends AbstractEvent
     implements Serializable
 {
 
     private final static long serialVersionUID = 1L;
-    protected long timeOffset;
-
-    /**
-     * Ruft den Wert der timeOffset-Eigenschaft ab.
-     * 
-     */
-    public long getTimeOffset() {
-        return timeOffset;
-    }
-
-    /**
-     * Legt den Wert der timeOffset-Eigenschaft fest.
-     * 
-     */
-    public void setTimeOffset(long value) {
-        this.timeOffset = value;
-    }
 
 }

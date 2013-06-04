@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.04 um 03:21:07 PM CEST 
+// Generiert: 2013.06.04 um 03:51:32 PM CEST 
 //
 
 
@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="type" type="{}eventType"/>
+ *         &lt;element name="timeOffset" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,7 +39,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "abstractEvent", propOrder = {
-    "type"
+    "type",
+    "timeOffset"
 })
 @XmlSeeAlso({
     MouseEvent.class,
@@ -52,6 +54,7 @@ public class AbstractEvent implements Serializable
     @XmlElement(required = true, type = String.class)
     @XmlJavaTypeAdapter(Adapter1 .class)
     protected EventTypeEnum type;
+    protected long timeOffset;
 
     /**
      * Ruft den Wert der type-Eigenschaft ab.
@@ -75,6 +78,22 @@ public class AbstractEvent implements Serializable
      */
     public void setType(EventTypeEnum value) {
         this.type = value;
+    }
+
+    /**
+     * Ruft den Wert der timeOffset-Eigenschaft ab.
+     * 
+     */
+    public long getTimeOffset() {
+        return timeOffset;
+    }
+
+    /**
+     * Legt den Wert der timeOffset-Eigenschaft fest.
+     * 
+     */
+    public void setTimeOffset(long value) {
+        this.timeOffset = value;
     }
 
 }

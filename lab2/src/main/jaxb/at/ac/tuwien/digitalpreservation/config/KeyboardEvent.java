@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.04 um 03:21:07 PM CEST 
+// Generiert: 2013.06.04 um 03:51:32 PM CEST 
 //
 
 
@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;extension base="{}abstractEvent">
  *       &lt;sequence>
- *         &lt;element name="timeOffset" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="scancodes" type="{http://www.w3.org/2001/XMLSchema}int" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/extension>
@@ -39,7 +38,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "keyboardEvent", propOrder = {
-    "timeOffset",
     "scancodes"
 })
 public class KeyboardEvent
@@ -48,25 +46,8 @@ public class KeyboardEvent
 {
 
     private final static long serialVersionUID = 1L;
-    protected long timeOffset;
     @XmlElement(type = Integer.class)
     protected List<Integer> scancodes;
-
-    /**
-     * Ruft den Wert der timeOffset-Eigenschaft ab.
-     * 
-     */
-    public long getTimeOffset() {
-        return timeOffset;
-    }
-
-    /**
-     * Legt den Wert der timeOffset-Eigenschaft fest.
-     * 
-     */
-    public void setTimeOffset(long value) {
-        this.timeOffset = value;
-    }
 
     /**
      * Gets the value of the scancodes property.
