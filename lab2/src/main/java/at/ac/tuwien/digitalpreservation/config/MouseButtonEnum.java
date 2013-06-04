@@ -14,6 +14,10 @@ public enum MouseButtonEnum {
 		this.bitmap = bitmap;
 	}
 
+	public int getBitmap() {
+		return bitmap;
+	}
+
 	public boolean isClicked(int bitmap) {
 		int result = this.bitmap & bitmap;
 		if (result == 0) {

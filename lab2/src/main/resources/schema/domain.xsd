@@ -60,6 +60,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="type" type="eventType"></xs:element>
+			<xs:element name="timeOffset" type="xs:long" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -72,7 +73,6 @@
 		<xs:complexContent>
 			<xs:extension base="abstractEvent">
 				<xs:sequence>
-					<xs:element name="timeOffset" type="xs:long" />
 					<xs:element name="scancodes" type="xs:int" minOccurs="1"
 						maxOccurs="unbounded" />
 				</xs:sequence>
@@ -89,7 +89,6 @@
 		<xs:complexContent>
 			<xs:extension base="abstractEvent">
 				<xs:sequence>
-					<xs:element name="timeOffset" type="xs:long" />
 					<xs:element name="xPosition" type="xs:int" />
 					<xs:element name="yPosition" type="xs:int" />
 					<xs:element name="zDelta" type="xs:int" />
@@ -116,11 +115,7 @@
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="abstractEvent">
-				<xs:sequence>
-					<xs:element name="timeOffset" type="xs:long" />
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="abstractEvent" />
 		</xs:complexContent>
 	</xs:complexType>
 

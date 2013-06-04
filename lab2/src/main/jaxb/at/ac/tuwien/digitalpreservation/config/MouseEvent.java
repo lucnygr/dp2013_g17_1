@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.04 um 03:21:07 PM CEST 
+// Generiert: 2013.06.04 um 03:51:32 PM CEST 
 //
 
 
@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;complexContent>
  *     &lt;extension base="{}abstractEvent">
  *       &lt;sequence>
- *         &lt;element name="timeOffset" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="xPosition" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="yPosition" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="zDelta" type="{http://www.w3.org/2001/XMLSchema}int"/>
@@ -44,7 +43,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "mouseEvent", propOrder = {
-    "timeOffset",
     "xPosition",
     "yPosition",
     "zDelta",
@@ -57,7 +55,6 @@ public class MouseEvent
 {
 
     private final static long serialVersionUID = 1L;
-    protected long timeOffset;
     protected int xPosition;
     protected int yPosition;
     protected int zDelta;
@@ -65,22 +62,6 @@ public class MouseEvent
     @XmlElement(required = true, type = String.class)
     @XmlJavaTypeAdapter(Adapter2 .class)
     protected List<MouseButtonEnum> mouseButtons;
-
-    /**
-     * Ruft den Wert der timeOffset-Eigenschaft ab.
-     * 
-     */
-    public long getTimeOffset() {
-        return timeOffset;
-    }
-
-    /**
-     * Legt den Wert der timeOffset-Eigenschaft fest.
-     * 
-     */
-    public void setTimeOffset(long value) {
-        this.timeOffset = value;
-    }
 
     /**
      * Ruft den Wert der xPosition-Eigenschaft ab.
