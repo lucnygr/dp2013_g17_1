@@ -42,7 +42,7 @@ public class MouseEventThread extends Thread {
 	public void run() {
 		LOGGER.debug("Starting MouseEventThread");
 		while (this.running) {
-			IEvent ev = this.es.getEvent(listener, 500);
+			IEvent ev = this.es.getEvent(listener, 100);
 			if (ev != null) {
 				IGuestMouseEvent event = IGuestMouseEvent.queryInterface(ev);
 				for (MouseEventHandler h : this.mouseEventHandler) {
