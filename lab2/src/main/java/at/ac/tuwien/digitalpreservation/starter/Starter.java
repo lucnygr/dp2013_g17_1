@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+import at.ac.tuwien.digitalpreservation.Player;
 import at.ac.tuwien.digitalpreservation.VirtualMachine;
 import at.ac.tuwien.digitalpreservation.application.Recorder;
 
@@ -62,8 +63,8 @@ public class Starter {
 			if (line.equalsIgnoreCase("exit")) {
 				running = false;
 			} else if (line.equalsIgnoreCase("help")) {
-				System.out.println("Valid commands:\n" + "run <recording>\n"
-						+ "record <newrecording>\n" + "exit");
+				System.out.println("Valid commands:\n" + "run <gcapname> <recording>\n"
+						+ "record <newgcapname>\n" + "exit");
 				continue;
 			}
 			StringTokenizer tok = new StringTokenizer(line, " ");
@@ -80,7 +81,14 @@ public class Starter {
 
 				String name = tok.nextToken();
 
-				playRecording(machine, name);
+				if (!tok.hasMoreTokens()) {
+					System.out.println("Invalid command");
+					continue;
+				}
+				String desc = tok.nextToken();
+				
+				playRecording(machine, new File("src/test/resources/" + name + ".xml"), desc);
+				System.out.println("done");
 				continue;
 			} else if (command.equalsIgnoreCase("record")) {
 				if (!tok.hasMoreTokens()) {
@@ -133,8 +141,9 @@ public class Starter {
 		System.out.println("done");
 	}
 
-	static boolean playRecording(VirtualMachine machine, String name) {
-		// TODO: implement
+	static boolean playRecording(VirtualMachine machine, File gcap, String recDescription) {
+		Player player = new Player(gcap, machine);
+		player.play(recDescription);
 		return false;
 	}
 
