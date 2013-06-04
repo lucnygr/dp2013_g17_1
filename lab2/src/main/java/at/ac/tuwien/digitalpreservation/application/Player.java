@@ -63,18 +63,18 @@ public class Player {
 
 		try {
 			ReportGenerator report = new ReportGenerator("Report_" + name + "_"
-					+ System.currentTimeMillis());
+					+ System.nanoTime());
 			report.init(this.gcapname);
 			report.startRecording(rec.getDescription());
 
 			List<AbstractEvent> list = rec
 					.getKeyboardEventOrMouseEventOrScreenshotEvent();
-			long starttime = System.currentTimeMillis();
+			long starttime = System.nanoTime();
 			for (AbstractEvent ev : list) {
-				final long TIMEOUT = 10000+(System.currentTimeMillis()) - starttime;
+				//final long TIMEOUT = 1000000000+(System.nanoTime()) - starttime;
 				long offset = 0;
-				while (offset < ev.getTimeOffset() && offset < TIMEOUT) {
-					offset = (System.currentTimeMillis()) - starttime;
+				while (offset < ev.getTimeOffset()) {
+					offset = (System.nanoTime()) - starttime;
 				}
 				//System.out.println(offset + " " + ev.getTimeOffset());
 

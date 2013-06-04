@@ -54,7 +54,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 
 	public void startRecording() {
 		this.currentRecording = new Recording();
-		this.recordingStart = System.currentTimeMillis();
+		this.recordingStart = System.nanoTime();
 		this.virtualMachine.addKeyboardEventHandler(this);
 		this.virtualMachine.addMouseEventHandler(this);
 	}
@@ -86,7 +86,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 	public void handle(IGuestKeyboardEvent event) {
 		if (this.equals(event.getScancodes(), SCANCODE_PRINT_SCREEN)) {
 			ScreenshotEvent sse = new ScreenshotEvent();
-			sse.setTimeOffset(System.currentTimeMillis() - this.recordingStart);
+			sse.setTimeOffset(System.nanoTime() - this.recordingStart);
 			sse.setType(EventTypeEnum.SCREENSHOT_EVENT);
 			this.currentRecording
 					.getKeyboardEventOrMouseEventOrScreenshotEvent().add(sse);
@@ -95,7 +95,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 			return;
 		} else {
 			KeyboardEvent ke = new KeyboardEvent();
-			ke.setTimeOffset(System.currentTimeMillis() - this.recordingStart);
+			ke.setTimeOffset(System.nanoTime() - this.recordingStart);
 			ke.getScancodes().addAll(event.getScancodes());
 			ke.setType(EventTypeEnum.KEYBOARD_EVENT);
 			this.currentRecording
@@ -119,7 +119,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 	@Override
 	public void handle(IGuestMouseEvent event) {
 		MouseEvent me = new MouseEvent();
-		me.setTimeOffset(System.currentTimeMillis() - this.recordingStart);
+		me.setTimeOffset(System.nanoTime() - this.recordingStart);
 		me.setWDelta(event.getW());
 		me.setXPosition(event.getX());
 		me.setYPosition(event.getY());
