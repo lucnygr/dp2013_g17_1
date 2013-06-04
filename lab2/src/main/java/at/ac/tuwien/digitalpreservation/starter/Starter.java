@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 import at.ac.tuwien.digitalpreservation.VirtualMachine;
-import at.ac.tuwien.digitalpreservation.recorder.Recorder;
+import at.ac.tuwien.digitalpreservation.application.Recorder;
 
 public class Starter {
 
