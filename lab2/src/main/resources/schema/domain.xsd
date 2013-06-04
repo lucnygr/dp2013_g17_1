@@ -34,15 +34,33 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="description" type="xs:string"></xs:element>
-			<xs:element name="keyboardEvent" type="keyboardEvent"
-				minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="mouseEvent" type="mouseEvent" minOccurs="0"
-				maxOccurs="unbounded" />
-			<xs:element name="screenshotEvent" type="screenshotEvent"
-				minOccurs="0" maxOccurs="unbounded" />
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="keyboardEvent" type="keyboardEvent" />
+				<xs:element name="mouseEvent" type="mouseEvent" />
+				<xs:element name="screenshotEvent" type="screenshotEvent" />
+			</xs:choice>
 		</xs:sequence>
 		<xs:attribute name="takeScreenshotBeforeEvent" type="xs:boolean"></xs:attribute>
 		<xs:attribute name="takeScreenshotAfterEvent" type="xs:boolean"></xs:attribute>
+	</xs:complexType>
+
+	<xs:simpleType name="eventType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MOUSE_EVENT" />
+			<xs:enumeration value="KEYBOARD_EVENT" />
+			<xs:enumeration value="SCREENSHOT_EVENT" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="abstractEvent">
+		<xs:annotation>
+			<xs:appinfo>
+				<jxb:class name="AbstractEvent" />
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="eventType"></xs:element>
+		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="keyboardEvent">
@@ -51,11 +69,15 @@
 				<jxb:class name="KeyboardEvent" />
 			</xs:appinfo>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="timeOffset" type="xs:long" />
-			<xs:element name="scancodes" type="xs:int" minOccurs="1"
-				maxOccurs="unbounded" />
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="abstractEvent">
+				<xs:sequence>
+					<xs:element name="timeOffset" type="xs:long" />
+					<xs:element name="scancodes" type="xs:int" minOccurs="1"
+						maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="mouseEvent">
@@ -64,15 +86,19 @@
 				<jxb:class name="MouseEvent" />
 			</xs:appinfo>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="timeOffset" type="xs:long" />
-			<xs:element name="xPosition" type="xs:int" />
-			<xs:element name="yPosition" type="xs:int" />
-			<xs:element name="zDelta" type="xs:int" />
-			<xs:element name="wDelta" type="xs:int" />
-			<xs:element name="mouseButtons" type="mouseButton"
-				minOccurs="1" maxOccurs="unbounded" />
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="abstractEvent">
+				<xs:sequence>
+					<xs:element name="timeOffset" type="xs:long" />
+					<xs:element name="xPosition" type="xs:int" />
+					<xs:element name="yPosition" type="xs:int" />
+					<xs:element name="zDelta" type="xs:int" />
+					<xs:element name="wDelta" type="xs:int" />
+					<xs:element name="mouseButtons" type="mouseButton"
+						minOccurs="1" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:simpleType name="mouseButton">
@@ -89,9 +115,13 @@
 				<jxb:class name="ScreenshotEvent" />
 			</xs:appinfo>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="timeOffset" type="xs:long" />
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="abstractEvent">
+				<xs:sequence>
+					<xs:element name="timeOffset" type="xs:long" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 </xs:schema>

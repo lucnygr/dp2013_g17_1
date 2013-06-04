@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.5-2 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.04 um 01:53:49 PM CEST 
+// Generiert: 2013.06.04 um 03:21:07 PM CEST 
 //
 
 
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * <pre>
  * &lt;complexType name="mouseEvent">
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;extension base="{}abstractEvent">
  *       &lt;sequence>
  *         &lt;element name="timeOffset" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="xPosition" type="{http://www.w3.org/2001/XMLSchema}int"/>
@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *         &lt;element name="wDelta" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="mouseButtons" type="{}mouseButton" maxOccurs="unbounded"/>
  *       &lt;/sequence>
- *     &lt;/restriction>
+ *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -52,6 +52,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "mouseButtons"
 })
 public class MouseEvent
+    extends AbstractEvent
     implements Serializable
 {
 
@@ -62,7 +63,7 @@ public class MouseEvent
     protected int zDelta;
     protected int wDelta;
     @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlJavaTypeAdapter(Adapter2 .class)
     protected List<MouseButtonEnum> mouseButtons;
 
     /**

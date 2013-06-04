@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import at.ac.tuwien.digitalpreservation.ConfigurationUtils;
+import at.ac.tuwien.digitalpreservation.config.EventTypeEnum;
 import at.ac.tuwien.digitalpreservation.config.GCAP;
 import at.ac.tuwien.digitalpreservation.config.KeyboardEvent;
 import at.ac.tuwien.digitalpreservation.config.MouseEvent;
@@ -25,22 +26,27 @@ public class ConfigurationUtilsTest {
 		mouseE.setXPosition(10);
 		mouseE.setYPosition(10);
 		mouseE.setZDelta(10);
+		mouseE.setType(EventTypeEnum.MOUSE_EVENT);
 
 		KeyboardEvent keyboardE = new KeyboardEvent();
 		keyboardE.setTimeOffset(20);
 		keyboardE.getScancodes().add(30);
 		keyboardE.getScancodes().add(40);
+		keyboardE.setType(EventTypeEnum.KEYBOARD_EVENT);
 
 		ScreenshotEvent screenshotE = new ScreenshotEvent();
 		screenshotE.setTimeOffset(30);
+		screenshotE.setType(EventTypeEnum.SCREENSHOT_EVENT);
 
 		Recording recording = new Recording();
 		recording.setDescription("Test Recording");
 		recording.setTakeScreenshotAfterEvent(true);
 		recording.setTakeScreenshotBeforeEvent(false);
-		recording.getMouseEvent().add(mouseE);
-		recording.getKeyboardEvent().add(keyboardE);
-		recording.getScreenshotEvent().add(screenshotE);
+		recording.getKeyboardEventOrMouseEventOrScreenshotEvent().add(mouseE);
+		recording.getKeyboardEventOrMouseEventOrScreenshotEvent()
+				.add(keyboardE);
+		recording.getKeyboardEventOrMouseEventOrScreenshotEvent().add(
+				screenshotE);
 
 		GCAP gcap = new GCAP();
 		gcap.getRecording().add(recording);
