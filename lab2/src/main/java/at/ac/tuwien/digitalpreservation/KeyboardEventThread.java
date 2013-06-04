@@ -42,7 +42,7 @@ public class KeyboardEventThread extends Thread {
 	public void run() {
 		LOGGER.debug("Starting KeyboardEventThread");
 		while (this.running) {
-			IEvent ev = this.es.getEvent(listener, 500);
+			IEvent ev = this.es.getEvent(listener, 1);
 			if (ev != null) {
 				IGuestKeyboardEvent event = IGuestKeyboardEvent
 						.queryInterface(ev);
