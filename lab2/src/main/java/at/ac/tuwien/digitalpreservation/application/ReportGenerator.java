@@ -3,13 +3,22 @@ package at.ac.tuwien.digitalpreservation.application;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class ReportGenerator {
 
 	private StringBuilder sb = new StringBuilder();
+
+	private Path path;
+
+	public ReportGenerator(String path) throws IOException {
+		this.path = Paths.get(path);
+		Files.createDirectory(this.path);
+	}
 
 	private void startTag(String s) {
 		this.sb.append("<").append(s).append(">").append("\n");
@@ -37,9 +46,9 @@ public class ReportGenerator {
 		this.endTag("html");
 	}
 
-	public void writeTo(String path) throws IOException {
-		Files.write(Paths.get(path),
-				this.sb.toString().getBytes(Charset.forName("UTF-8")),
+	public void write() throws IOException {
+		Files.write(this.path.resolve("index.html"), this.sb.toString()
+				.getBytes(Charset.forName("UTF-8")),
 				StandardOpenOption.CREATE_NEW);
 	}
 
@@ -62,12 +71,19 @@ public class ReportGenerator {
 		this.endTag("p");
 	}
 
-	public void addScreenshot(long offset, Calendar timestamp, String path) {
+	public void addScreenshot(long offset, Calendar timestamp, byte[] image)
+			throws IOException {
+		Path imagePath = this.path.resolve(System.currentTimeMillis() + ".png");
+		Files.write(imagePath, image, StandardOpenOption.CREATE_NEW);
+
 		this.startTag("p");
 		this.startTag("h3");
-		this.write("Timestamp: " + timestamp + ", Offset: " + offset);
+		this.write("Timestamp: "
+				+ new SimpleDateFormat("dd.MM.yyyy hh:mm:ss.ssss")
+						.format(timestamp.getTime()) + ", Offset: " + offset);
 		this.endTag("h3");
-		this.sb.append("<img src='").append(path).append("' />");
+		this.sb.append("<img src='").append(imagePath.getFileName())
+				.append("' />");
 		this.endTag("p");
 	}
 }

@@ -1,9 +1,5 @@
 package at.ac.tuwien.digitalpreservation;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.virtualbox_4_2.Holder;
@@ -154,8 +150,7 @@ public class VirtualMachine {
 		this.manager = null;
 	}
 
-	public boolean takeScreenShot(String filepath) {
-		boolean returnvalue = true;
+	public byte[] takeScreenShot() {
 		IDisplay d = this.console.getDisplay();
 
 		Holder<Long> width = new Holder<Long>();
@@ -165,26 +160,7 @@ public class VirtualMachine {
 		d.getScreenResolution(Long.valueOf(0), width, height, bitsPerPixel);
 		byte[] image = d.takeScreenShotPNGToArray(Long.valueOf(0), width.value,
 				height.value);
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream(filepath);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return false;
-		}
-		try {
-			fos.write(image);
-		} catch (IOException e) {
-			e.printStackTrace();
-			returnvalue = false;
-		}
-		try {
-			fos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return returnvalue;
+		return image;
 	}
 
 	public void addKeyboardEventHandler(KeyboardEventHandler handler) {
