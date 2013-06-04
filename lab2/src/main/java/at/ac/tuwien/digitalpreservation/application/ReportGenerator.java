@@ -32,12 +32,12 @@ public class ReportGenerator {
 		this.sb.append(s).append("\n");
 	}
 
-	public void init(String name, String description) {
+	public void init(String name) {
 		this.startTag("html");
 		this.printHead(name);
 		this.startTag("body");
 		this.startTag("h1");
-		this.write(description);
+		this.write(name);
 		this.endTag("h1");
 	}
 
