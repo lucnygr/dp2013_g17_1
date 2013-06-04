@@ -61,9 +61,9 @@ public class Player {
 		}
 
 		try {
-			ReportGenerator report = new ReportGenerator("Report_" + name + "_"
-					+ System.currentTimeMillis());
-			report.init(name);
+			ReportGenerator report = new ReportGenerator("Report_"
+					+ this.gcap.getName() + "_" + System.currentTimeMillis());
+			report.init(this.gcap.getName());
 			report.startRecording(rec.getDescription());
 
 			List<AbstractEvent> list = rec

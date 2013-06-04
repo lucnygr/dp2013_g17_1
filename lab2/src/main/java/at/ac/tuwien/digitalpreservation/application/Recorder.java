@@ -1,6 +1,7 @@
 package at.ac.tuwien.digitalpreservation.application;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,13 +71,15 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		this.recordingStart = 0;
 	}
 
-	public void saveGCAP(File file) {
+	public void saveGCAP(Path directoryPath, String gcapName) {
 		if (this.currentRecording != null) {
 			throw new IllegalStateException(
 					"Finish Recording before saving GCAP file");
 		}
 
-		ConfigurationUtils.marshal(this.gcap, file);
+		this.gcap.setName(gcapName);
+		ConfigurationUtils.marshal(this.gcap,
+				directoryPath.resolve(gcapName + ".xml").toFile());
 	}
 
 	@Override
