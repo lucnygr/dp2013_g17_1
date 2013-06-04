@@ -1,5 +1,6 @@
 package at.ac.tuwien.digitalpreservation.config;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,14 @@ public enum MouseButtonEnum {
 			}
 		}
 		return mbeSet;
+	}
+
+	public static int getClicked(Collection<MouseButtonEnum> mouseButtons) {
+		int bitmap = 0;
+		for (MouseButtonEnum mbe : mouseButtons) {
+			bitmap |= mbe.bitmap;
+		}
+		return bitmap;
 	}
 
 	public static MouseButtonEnum parseMouseButton(String mouseButton) {
