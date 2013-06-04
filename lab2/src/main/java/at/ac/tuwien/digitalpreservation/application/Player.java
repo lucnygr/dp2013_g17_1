@@ -68,7 +68,7 @@ public class Player {
 
 			List<AbstractEvent> list = rec
 					.getKeyboardEventOrMouseEventOrScreenshotEvent();
-			long starttime = new Date().getTime();
+			long starttime = System.currentTimeMillis();
 			for (AbstractEvent ev : list) {
 				final long TIMEOUT = 10000;
 				long offset = 0;

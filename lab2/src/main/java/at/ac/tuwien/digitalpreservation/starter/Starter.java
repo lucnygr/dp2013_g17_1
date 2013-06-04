@@ -54,6 +54,7 @@ public class Starter {
 
 		System.out.println("Ready. Type \"help\" for a list of commands");
 		while (running) {
+			System.out.println("Enter command:");
 			String line = "";
 			try {
 				line = in.readLine();
