@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ import at.ac.tuwien.digitalpreservation.config.KeyboardEvent;
 import at.ac.tuwien.digitalpreservation.config.MouseEvent;
 import at.ac.tuwien.digitalpreservation.config.Recording;
 
-public class Player {
+public class Player extends Thread {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
 	String name = "";
@@ -26,7 +25,19 @@ public class Player {
 	VirtualMachine vm;
 	GCAP gcap = null;
 	List<Recording> recs = null;
-
+	boolean pause = false;
+	boolean stop = false;
+	boolean playing = false;
+	
+	public boolean isPlaying() {
+		return this.playing;
+	}
+	public boolean isPaused() {
+		return this.pause;
+	}
+	public boolean isStopped() {
+		return this.stop;
+	}
 	/**
 	 * 
 	 * @param gcap
@@ -41,15 +52,20 @@ public class Player {
 		this.recs = this.gcap.getRecording();
 	}
 
-	public List<String> getRecordingTitles() {
+	public synchronized List<String> getRecordingTitles() {
 		ArrayList<String> out = new ArrayList<String>();
 		for (Recording r : recs) {
 			out.add(r.getDescription());
 		}
 		return out;
 	}
-
-	public void play(String name) {
+	/**
+	 * Don't use this!
+	 */
+	public void run() {
+		this.playing = true;
+		this.pause = false;
+		this.stop = false;
 		Recording rec = null;
 		for (Recording r : recs) {
 			if (r.getDescription().equalsIgnoreCase(name)) {
@@ -58,6 +74,7 @@ public class Player {
 		}
 		if (rec == null) {
 			LOGGER.warn("No such recording \"" + name + "\"");
+			this.playing = false;
 			return;
 		}
 
@@ -73,8 +90,11 @@ public class Player {
 			for (AbstractEvent ev : list) {
 				//final long TIMEOUT = 1000000000+(System.nanoTime()) - starttime;
 				long offset = 0;
-				while (offset < ev.getTimeOffset()) {
+				while ((offset < ev.getTimeOffset() || pause) && !stop) {
 					offset = (System.nanoTime()) - starttime;
+				}
+				if (stop) {
+					break;
 				}
 				//System.out.println(offset + " " + ev.getTimeOffset());
 
@@ -101,8 +121,45 @@ public class Player {
 			report.endRecording();
 			report.finish();
 			report.write();
+			if (stop) {
+				LOGGER.info("Stopped recording");
+			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
+		}
+		this.playing = false;
+		this.pause = false;
+		this.stop = false;
+		LOGGER.debug("Stopped playing");
+	}
+	
+	public void play(String name) {
+		if (!playing) {
+			this.playing = true;
+			this.name = name;
+			this.start();
+		} else {
+			LOGGER.error("Cannot start playing \""+name+"\" because the Player is already playing.");
+		}
+		
+	}
+	
+	public synchronized void pause() {
+		if (playing) {
+			this.pause = true;
+		}
+		
+	}
+	
+	public synchronized void unpause() {
+		if (playing) {
+			this.pause = false;
+		}
+	}
+	
+	public synchronized void cancel() {
+		if (playing) {
+			this.stop = true;
 		}
 	}
 }

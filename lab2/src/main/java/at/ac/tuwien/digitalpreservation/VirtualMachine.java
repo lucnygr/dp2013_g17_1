@@ -65,7 +65,7 @@ public class VirtualMachine {
 		this.password = password;
 	}
 
-	public void init() {
+	public boolean init() {
 		this.manager = VirtualBoxManager.createInstance(null);
 		try {
 			this.manager.connect(this.webserviceUrl, null, null);
@@ -73,7 +73,7 @@ public class VirtualMachine {
 			LOGGER.error(
 					"Could not connect to virtual box manager, start webserver fist",
 					e);
-			return;
+			return false;
 		}
 
 		this.virtualBox = this.manager.getVBox();
@@ -99,7 +99,7 @@ public class VirtualMachine {
 		progress.waitForCompletion(30000);
 		if (progress.getResultCode() != 0) {// check success
 			LOGGER.error("could not launch virtual machine");
-			return;
+			return false;
 		}
 
 		try {
@@ -114,6 +114,7 @@ public class VirtualMachine {
 
 		this.mouseEventThread = new MouseEventThread(this.console);
 		this.mouseEventThread.start();
+		return true;
 	}
 
 	public void destroy() {

@@ -13,7 +13,6 @@ import at.ac.tuwien.digitalpreservation.application.Player;
 import at.ac.tuwien.digitalpreservation.application.Recorder;
 
 public class Starter {
-
 	/**
 	 * @param args
 	 */
@@ -47,7 +46,10 @@ public class Starter {
 		VirtualMachine machine = new VirtualMachine(vm, user, passwd);
 		System.out.println("Starting Virtual Machine \"" + vm + "\"...");
 
-		machine.init();
+		if (!machine.init()) {
+			System.out.println("Exiting...");
+			return;
+		}
 
 		boolean running = true;
 		InputStreamReader reader = new InputStreamReader(System.in);
@@ -90,9 +92,10 @@ public class Starter {
 							+ "\"");
 					continue;
 				}
-				Player player = new Player(gcap, machine);
-				List<String> recs = player.getRecordingTitles();
+				
 				while (true) {
+					Player player = new Player(gcap, machine);
+					List<String> recs = player.getRecordingTitles();
 					System.out
 							.println("Choose one of the following recordings:");
 					for (String s : recs) {
@@ -114,7 +117,11 @@ public class Starter {
 					for (String s : recs) {
 						if (s.equalsIgnoreCase(choice)) {
 							player.play(s);
-							System.out.println("done");
+							System.out.println("playing "+name+" - "+choice+" ...");
+							while(player.isPlaying()) {
+								System.out.print(".");
+							}
+							System.out.println("\ndone");
 							valid = true;
 							break;
 						}
