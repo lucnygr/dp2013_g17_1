@@ -34,32 +34,51 @@ public class KeyboardEventThread extends Thread {
 		LOGGER.debug("KeyboardEventThread initialized");
 	}
 
-	public void close() {
+	public synchronized void close() {
 		this.running = false;
 		LOGGER.debug("Closing KeyboardEventThread");
+		notifyAll();
 	}
 
 	public void run() {
 		LOGGER.debug("Starting KeyboardEventThread");
 		while (this.running) {
-			IEvent ev = this.es.getEvent(listener, 1);
-			if (ev != null) {
-				IGuestKeyboardEvent event = IGuestKeyboardEvent
-						.queryInterface(ev);
-				for (KeyboardEventHandler h : this.keyboardEventHandler) {
-					h.handle(event);
+			if (!this.keyboardEventHandler.isEmpty()) {
+				IEvent ev = this.es.getEvent(listener, 1);
+				if (ev != null) {
+					IGuestKeyboardEvent event = IGuestKeyboardEvent
+							.queryInterface(ev);
+					for (KeyboardEventHandler h : this.keyboardEventHandler) {
+						h.handle(event);
+					}
+					this.es.eventProcessed(this.listener, ev);
 				}
-				this.es.eventProcessed(this.listener, ev);
+			} else {
+				this.es.unregisterListener(this.listener);
+				LOGGER.debug("waiting...");
+				synchronized(this) {
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				LOGGER.debug("continuing");
+				this.es.registerListener(listener,
+						Arrays.asList(VBoxEventType.OnGuestKeyboard), false);
 			}
 		}
 		this.es.unregisterListener(this.listener);
 	}
 
-	public void addKeyboardEventHandler(KeyboardEventHandler handler) {
+	public synchronized void addKeyboardEventHandler(KeyboardEventHandler handler) {
 		this.keyboardEventHandler.add(handler);
+		notifyAll();
 	}
 
-	public void removeKeyboardEventHandler(KeyboardEventHandler handler) {
+	public synchronized void removeKeyboardEventHandler(KeyboardEventHandler handler) {
 		this.keyboardEventHandler.remove(handler);
+		notifyAll();
 	}
 }

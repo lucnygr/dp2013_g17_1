@@ -16,7 +16,6 @@ import org.virtualbox_4_2.VBoxException;
 import org.virtualbox_4_2.VirtualBoxManager;
 
 import at.ac.tuwien.digitalpreservation.config.KeyboardEvent;
-import at.ac.tuwien.digitalpreservation.config.MouseButtonEnum;
 import at.ac.tuwien.digitalpreservation.config.MouseEvent;
 import at.ac.tuwien.digitalpreservation.handler.KeyboardEventHandler;
 import at.ac.tuwien.digitalpreservation.handler.MouseEventHandler;
@@ -47,6 +46,9 @@ public class VirtualMachine {
 	private ISession session;
 
 	private IConsole console;
+	
+	private IKeyboard keyboard;
+	private IMouse mouse;
 
 	// ----------------- Event Thread section
 	private KeyboardEventThread keyboardEventThread;
@@ -68,7 +70,7 @@ public class VirtualMachine {
 	public boolean init() {
 		this.manager = VirtualBoxManager.createInstance(null);
 		try {
-			this.manager.connect(this.webserviceUrl, null, null);
+			this.manager.connect(this.webserviceUrl, username, password);
 		} catch (VBoxException e) {
 			LOGGER.error(
 					"Could not connect to virtual box manager, start webserver fist",
@@ -77,12 +79,18 @@ public class VirtualMachine {
 		}
 
 		this.virtualBox = this.manager.getVBox();
-		for (IMachine machine : this.virtualBox.getMachines()) {
-			if (this.machineName.equals(machine.getName())) {
-				this.machine = machine;
-				break;
+		if (this.machineName != null) {
+			for (IMachine machine : this.virtualBox.getMachines()) {
+				if (this.machineName.equals(machine.getName())) {
+					this.machine = machine;
+					break;
+				}
 			}
+		} else {
+			LOGGER.debug("No Machine name given. Picking first VM");
+			this.machine = this.virtualBox.getMachines().get(0);
 		}
+		
 		if (this.machine == null) {
 			throw new IllegalStateException("Machine " + this.machineName
 					+ " not found");
@@ -114,6 +122,8 @@ public class VirtualMachine {
 
 		this.mouseEventThread = new MouseEventThread(this.console);
 		this.mouseEventThread.start();
+		this.keyboard = this.console.getKeyboard();
+		this.mouse = this.console.getMouse();
 		return true;
 	}
 
@@ -181,14 +191,15 @@ public class VirtualMachine {
 	}
 
 	public void putKeyboardEvent(KeyboardEvent ev) {
-		IKeyboard k = this.console.getKeyboard();
-		k.putScancodes(ev.getScancodes());
+		keyboard.putScancodes(ev.getScancodes());
 	}
 
 	public void putMouseEvent(MouseEvent ev) {
-		IMouse m = this.console.getMouse();
-		m.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(),
+		/*m.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(),
 				ev.getZDelta(), ev.getWDelta(),
-				MouseButtonEnum.getClicked(ev.getMouseButtons()));
+				MouseButtonEnum.getClicked(ev.getMouseButtons()));*/
+		mouse.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(),
+				ev.getZDelta(), ev.getWDelta(),
+				ev.getMouseButtons());
 	}
 }

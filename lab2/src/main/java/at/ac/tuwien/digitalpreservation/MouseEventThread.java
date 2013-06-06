@@ -34,31 +34,51 @@ public class MouseEventThread extends Thread {
 		LOGGER.debug("MouseEventThread initialized");
 	}
 
-	public void close() {
+	synchronized public void close() {
 		this.running = false;
 		LOGGER.debug("Closing MouseEventThread");
+		notifyAll();
 	}
 
 	public void run() {
 		LOGGER.debug("Starting MouseEventThread");
 		while (this.running) {
-			IEvent ev = this.es.getEvent(listener, 1);
-			if (ev != null) {
-				IGuestMouseEvent event = IGuestMouseEvent.queryInterface(ev);
-				for (MouseEventHandler h : this.mouseEventHandler) {
-					h.handle(event);
+			if (!this.mouseEventHandler.isEmpty()) {
+				IEvent ev = this.es.getEvent(listener, 1);
+				if (ev != null) {
+					IGuestMouseEvent event = IGuestMouseEvent.queryInterface(ev);
+					for (MouseEventHandler h : this.mouseEventHandler) {
+						h.handle(event);
+					}
+					this.es.eventProcessed(this.listener, ev);
 				}
-				this.es.eventProcessed(this.listener, ev);
+			} else {
+				this.es.unregisterListener(this.listener);
+				LOGGER.debug("waiting...");
+				synchronized(this) {
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				LOGGER.debug("continuing");
+				this.es.registerListener(listener,
+						Arrays.asList(VBoxEventType.OnGuestMouse), false);
 			}
+			
 		}
 		this.es.unregisterListener(this.listener);
 	}
 
-	public void addMouseEventHandler(MouseEventHandler handler) {
+	synchronized public void addMouseEventHandler(MouseEventHandler handler) {
 		this.mouseEventHandler.add(handler);
+		notifyAll();
 	}
 
-	public void removeMouseEventHandler(MouseEventHandler handler) {
+	synchronized public void removeMouseEventHandler(MouseEventHandler handler) {
 		this.mouseEventHandler.remove(handler);
+		notifyAll();
 	}
 }

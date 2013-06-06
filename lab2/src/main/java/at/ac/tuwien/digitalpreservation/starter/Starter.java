@@ -7,12 +7,18 @@ import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.StringTokenizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
 
 import at.ac.tuwien.digitalpreservation.VirtualMachine;
 import at.ac.tuwien.digitalpreservation.application.Player;
 import at.ac.tuwien.digitalpreservation.application.Recorder;
 
 public class Starter {
+	public static final String GCAPPATH = "recordings/";
+	private static final Logger LOGGER = LoggerFactory.getLogger(Starter.class);
 	/**
 	 * @param args
 	 */
@@ -22,7 +28,9 @@ public class Starter {
 		String url = null;
 		String user = null;
 		String passwd = null;
-
+		boolean debug = false;
+		System.out.println("Usage: -vm: <VM-name> -url: <url:port> -user: <user> -passwd: <password>");
+		
 		for (int i = 0; i < args.length; i++) {
 			if ("-vm".equals(args[i]))
 				vm = args[++i];
@@ -32,17 +40,28 @@ public class Starter {
 				user = args[++i];
 			else if ("-passwd".equals(args[i]))
 				passwd = args[++i];
+			else if ("-d".equalsIgnoreCase(args[i]))
+				debug = true;
 		}
-		if (vm == null || url == null || user == null || passwd == null) {
-			System.out
-					.println("Not enough arguments, using default arguments.");
-			vm = "Windows XP - SP 3 - 32bit";
+		if (vm == null) 
+			vm = null;
+		if (url == null) 
 			url = "127.0.0.1:18083";
-			user = "test-vb";
-			passwd = "test";
+		if (user == null) 
+			user = "user";
+		if (passwd == null) 
+			passwd = "";
+		if (vm == null) 
+			vm = null;
+		if (debug == true) {
+			ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		    root.setLevel(Level.ALL);
+		} else {
+			ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		    root.setLevel(Level.OFF);
 		}
-		System.out.println("-vm:" + vm + " url:" + url + " user:" + user
-				+ " passwd:" + passwd);
+		LOGGER.debug("-vm:" + vm + " -url:" + url + " -user:" + user
+				+ " -passwd:" + passwd);
 		VirtualMachine machine = new VirtualMachine(vm, user, passwd);
 		System.out.println("Starting Virtual Machine \"" + vm + "\"...");
 
@@ -86,7 +105,7 @@ public class Starter {
 				}
 
 				String name = tok.nextToken();
-				File gcap = new File("src/test/resources/" + name + ".xml");
+				File gcap = new File(GCAPPATH + name + ".xml");
 				if (!gcap.isFile()) {
 					System.out.println("There is no GCAP named \"" + name
 							+ "\"");
@@ -120,7 +139,7 @@ public class Starter {
 							System.out.println("playing " + name + " - "
 									+ choice + " ...");
 							while (player.isPlaying()) {
-								System.out.print(".");
+								//System.out.print(".");
 							}
 							System.out.println("\ndone");
 							valid = true;
@@ -180,7 +199,7 @@ public class Starter {
 					}
 				}
 				System.out.println("Save recordings as " + name);
-				recorder.saveGCAP(Paths.get("src/test/resources"), name);
+				recorder.saveGCAP(Paths.get(GCAPPATH), name);
 
 				continue;
 			} else {

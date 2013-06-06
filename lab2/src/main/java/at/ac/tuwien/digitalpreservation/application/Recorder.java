@@ -15,7 +15,6 @@ import at.ac.tuwien.digitalpreservation.VirtualMachine;
 import at.ac.tuwien.digitalpreservation.config.EventTypeEnum;
 import at.ac.tuwien.digitalpreservation.config.GCAP;
 import at.ac.tuwien.digitalpreservation.config.KeyboardEvent;
-import at.ac.tuwien.digitalpreservation.config.MouseButtonEnum;
 import at.ac.tuwien.digitalpreservation.config.MouseEvent;
 import at.ac.tuwien.digitalpreservation.config.Recording;
 import at.ac.tuwien.digitalpreservation.config.ScreenshotEvent;
@@ -78,7 +77,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 			throw new IllegalStateException(
 					"Finish Recording before saving GCAP file");
 		}
-
+		this.gcap.sort();
 		this.gcap.setName(gcapName);
 		ConfigurationUtils.marshal(this.gcap,
 				directoryPath.resolve(gcapName + ".xml").toFile());
@@ -122,7 +121,17 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		me.setXPosition(event.getX());
 		me.setYPosition(event.getY());
 		me.setZDelta(event.getZ());
-		me.getMouseButtons().addAll(
+		me.setMouseButtons(event.getButtons());
+		me.setType(EventTypeEnum.MOUSE_EVENT);
+		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
+				.add(me);
+
+		if (me.getMouseButtons() > 0) {
+			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
+				this.addScreenshotEvent(me.getTimeOffset());
+			}
+		}
+		/*me.getMouseButtons().addAll(
 				MouseButtonEnum.getClicked(event.getButtons()));
 		me.setType(EventTypeEnum.MOUSE_EVENT);
 		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
@@ -132,7 +141,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
 				this.addScreenshotEvent(me.getTimeOffset());
 			}
-		}
+		}*/
 	}
 
 	private void addScreenshotEvent(long offset) {

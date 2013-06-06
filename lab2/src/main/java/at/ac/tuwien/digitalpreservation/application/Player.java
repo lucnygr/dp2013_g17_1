@@ -2,8 +2,10 @@ package at.ac.tuwien.digitalpreservation.application;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,13 +31,13 @@ public class Player extends Thread {
 	boolean stop = false;
 	boolean playing = false;
 	
-	public boolean isPlaying() {
+	synchronized public boolean isPlaying() {
 		return this.playing;
 	}
-	public boolean isPaused() {
+	synchronized public boolean isPaused() {
 		return this.pause;
 	}
-	public boolean isStopped() {
+	synchronized public boolean isStopped() {
 		return this.stop;
 	}
 	/**
@@ -80,7 +82,7 @@ public class Player extends Thread {
 
 		try {
 			ReportGenerator report = new ReportGenerator("Report_" + this.gcapname + "_" + name + "_"
-					+ System.nanoTime());
+					+ new StringBuilder(new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date())));
 			report.init(this.gcapname);
 			report.startRecording(rec.getDescription());
 

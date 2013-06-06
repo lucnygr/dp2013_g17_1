@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project lab2 with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="target/JAR/GCAP.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="at.ac.tuwien.digitalpreservation.starter.Starter"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ vboxjws-4.2.12.jar slf4j-api-1.7.5.jar logback-classic-1.0.13.jar logback-core-1.0.13.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="target/classes"/>
+            <zipfileset dir="C:\Users\CLF\.m2\repository\org\virtualbox\vboxjws\4.2.12" includes="vboxjws-4.2.12.jar"/>
+            <zipfileset dir="C:\Users\CLF\.m2\repository\org\slf4j\slf4j-api\1.7.5" includes="slf4j-api-1.7.5.jar"/>
+            <zipfileset dir="C:\Users\CLF\.m2\repository\ch\qos\logback\logback-classic\1.0.13" includes="logback-classic-1.0.13.jar"/>
+            <zipfileset dir="C:\Users\CLF\.m2\repository\ch\qos\logback\logback-core\1.0.13" includes="logback-core-1.0.13.jar"/>
+        </jar>
+    </target>
+</project>
