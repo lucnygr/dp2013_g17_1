@@ -79,7 +79,7 @@ public class Player extends Thread {
 		}
 
 		try {
-			ReportGenerator report = new ReportGenerator("Report_" + name + "_"
+			ReportGenerator report = new ReportGenerator("Report_" + this.gcapname + "_" + name + "_"
 					+ System.nanoTime());
 			report.init(this.gcapname);
 			report.startRecording(rec.getDescription());
