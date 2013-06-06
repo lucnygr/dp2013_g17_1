@@ -40,8 +40,7 @@ public class ConfigurationUtilsTest {
 
 		Recording recording = new Recording();
 		recording.setDescription("Test Recording");
-		recording.setTakeScreenshotAfterEvent(true);
-		recording.setTakeScreenshotBeforeEvent(false);
+		recording.setTakeScreenshotOnMouseclickEvent(true);
 		recording.getKeyboardEventOrMouseEventOrScreenshotEvent().add(mouseE);
 		recording.getKeyboardEventOrMouseEventOrScreenshotEvent()
 				.add(keyboardE);

@@ -52,8 +52,10 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		this.gcap = ConfigurationUtils.unmarshal(file);
 	}
 
-	public void startRecording() {
+	public void startRecording(boolean takeScreenshotOnMouseclickEvent) {
 		this.currentRecording = new Recording();
+		this.currentRecording
+				.setTakeScreenshotOnMouseclickEvent(takeScreenshotOnMouseclickEvent);
 		this.recordingStart = System.nanoTime();
 		this.virtualMachine.addKeyboardEventHandler(this);
 		this.virtualMachine.addMouseEventHandler(this);
@@ -85,11 +87,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 	@Override
 	public void handle(IGuestKeyboardEvent event) {
 		if (this.equals(event.getScancodes(), SCANCODE_PRINT_SCREEN)) {
-			ScreenshotEvent sse = new ScreenshotEvent();
-			sse.setTimeOffset(System.nanoTime() - this.recordingStart);
-			sse.setType(EventTypeEnum.SCREENSHOT_EVENT);
-			this.currentRecording
-					.getKeyboardEventOrMouseEventOrScreenshotEvent().add(sse);
+			this.addScreenshotEvent(System.nanoTime() - this.recordingStart);
 		} else if (this.equals(event.getScancodes(),
 				SCANCODE_PRINT_SCREEN_RELEASE)) {
 			return;
@@ -129,5 +127,19 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		me.setType(EventTypeEnum.MOUSE_EVENT);
 		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
 				.add(me);
+
+		if (me.getMouseButtons().size() > 0) {
+			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
+				this.addScreenshotEvent(me.getTimeOffset());
+			}
+		}
+	}
+
+	private void addScreenshotEvent(long offset) {
+		ScreenshotEvent sse = new ScreenshotEvent();
+		sse.setTimeOffset(offset);
+		sse.setType(EventTypeEnum.SCREENSHOT_EVENT);
+		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
+				.add(sse);
 	}
 }

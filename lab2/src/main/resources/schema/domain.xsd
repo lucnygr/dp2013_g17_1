@@ -41,8 +41,8 @@
 				<xs:element name="screenshotEvent" type="screenshotEvent" />
 			</xs:choice>
 		</xs:sequence>
-		<xs:attribute name="takeScreenshotBeforeEvent" type="xs:boolean"></xs:attribute>
-		<xs:attribute name="takeScreenshotAfterEvent" type="xs:boolean"></xs:attribute>
+		<xs:attribute name="takeScreenshotOnMouseclickEvent"
+			type="xs:boolean"></xs:attribute>
 	</xs:complexType>
 
 	<xs:simpleType name="eventType">
