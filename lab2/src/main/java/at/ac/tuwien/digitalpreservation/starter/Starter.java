@@ -92,7 +92,7 @@ public class Starter {
 							+ "\"");
 					continue;
 				}
-				
+
 				while (true) {
 					Player player = new Player(gcap, machine);
 					List<String> recs = player.getRecordingTitles();
@@ -117,8 +117,9 @@ public class Starter {
 					for (String s : recs) {
 						if (s.equalsIgnoreCase(choice)) {
 							player.play(s);
-							System.out.println("playing "+name+" - "+choice+" ...");
-							while(player.isPlaying()) {
+							System.out.println("playing " + name + " - "
+									+ choice + " ...");
+							while (player.isPlaying()) {
 								System.out.print(".");
 							}
 							System.out.println("\ndone");
@@ -143,13 +144,21 @@ public class Starter {
 				Recorder recorder = new Recorder(machine);
 
 				while (true) {
-					System.out.println("Press enter to start recording");
+					boolean takeScreenshotOnMouseclick = false;
 					try {
+						System.out
+								.println("Take screenshot on mouseclick events (Y/N)");
+						line = in.readLine();
+						if ("y".equalsIgnoreCase(line)) {
+							takeScreenshotOnMouseclick = true;
+						}
+
+						System.out.println("Press enter to start recording");
 						in.readLine();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					recorder.startRecording();
+					recorder.startRecording(takeScreenshotOnMouseclick);
 					System.out.println("Press enter to stop recording");
 					try {
 						in.readLine();
@@ -159,13 +168,13 @@ public class Starter {
 								.println("Enter description of the recording: ");
 						line = in.readLine();
 						recorder.finishRecording(line);
-						
+
 						System.out.println("Continue recording (Y/N)");
 						line = in.readLine();
 						if ("n".equalsIgnoreCase(line)) {
 							break;
-						} 
-						
+						}
+
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
