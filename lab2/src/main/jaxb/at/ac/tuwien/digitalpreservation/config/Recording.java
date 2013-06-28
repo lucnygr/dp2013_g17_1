@@ -26,8 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.ac.tuwien.digitalpreservation.application.Recorder;
-
 
 /**
  * <p>Java class for recording complex type.
@@ -176,10 +174,10 @@ implements Serializable
 		boolean currently_doubleclick_m = false;
 		boolean currently_doubleclick_r = false;
 		long timeLastScreenshot = 0;
-		long lastLMB = 0; // last time LMB was down
-		long lastRMB = 0; // last time RMB was down
-		long lastMMB = 0; // last time MMB was down
-		MouseEvent lm = null; // last mouse event
+		//long lastLMB = 0; // last time LMB was down
+		//long lastRMB = 0; // last time RMB was down
+		//long lastMMB = 0; // last time MMB was down
+		//MouseEvent lm = null; // last mouse event
 		int numRemovedScreenshotEvents = 0;
 		//List<AbstractEvent> output = new ArrayList<AbstractEvent>();
 		List<KeyboardEvent> o_keyboard = new ArrayList<KeyboardEvent>();
@@ -265,7 +263,7 @@ implements Serializable
 					currently_drag_m = false;
 					o_mouse.add(me);
 				}*/
-				lm = me;
+				//lm = me;
 				break;
 			case SCREENSHOT_EVENT:
 				if (!currently_drag_l && !currently_drag_m && !currently_drag_r && 

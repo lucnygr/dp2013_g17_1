@@ -24,15 +24,27 @@ public class MouseEventThread extends Thread {
 	private IEventSource es = null;
 	private IEventListener listener = null;
 	private boolean running = true;
+	
+	private IConsole console = null;
 
 	private List<MouseEventHandler> mouseEventHandler = new ArrayList<>();
 
 	public MouseEventThread(IConsole console) {
+		this.console = console;
+		this.init();
+		
+		LOGGER.debug("MouseEventThread initialized");
+	}
+	
+	/**
+	 * Call on creation and to reinitialize
+	 */
+	private synchronized void init() {
+		LOGGER.debug("Initializing...");
 		this.es = console.getMouse().getEventSource();
 		this.listener = this.es.createListener();
 		this.es.registerListener(listener,
 				Arrays.asList(VBoxEventType.OnGuestMouse), false);
-		LOGGER.debug("MouseEventThread initialized");
 	}
 
 	synchronized public void close() {
@@ -58,8 +70,12 @@ public class MouseEventThread extends Thread {
 				} catch (VBoxException e) {
 					e.printStackTrace();
 					LOGGER.error("Error in MouseEventThread.run: "+e.getMessage());
-					this.es.registerListener(listener,
-							Arrays.asList(VBoxEventType.OnGuestMouse), false);
+					try {
+						this.es.registerListener(listener,Arrays.asList(VBoxEventType.OnGuestMouse), false);
+					} catch (VBoxException v) {
+						init();
+					}
+					
 				}
 			} else {
 				this.es.unregisterListener(this.listener);
@@ -73,8 +89,11 @@ public class MouseEventThread extends Thread {
 					}
 				}
 				LOGGER.debug("continuing");
-				this.es.registerListener(listener,
-						Arrays.asList(VBoxEventType.OnGuestMouse), false);
+				try {
+					this.es.registerListener(listener,Arrays.asList(VBoxEventType.OnGuestMouse), false);
+				} catch (VBoxException v) {
+					init();
+				}
 			}
 
 		}

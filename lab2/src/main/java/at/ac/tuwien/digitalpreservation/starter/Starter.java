@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -34,9 +36,12 @@ public class Starter {
 		String user = "user";
 		String passwd = "";
 		boolean debug = false;
-		System.out
-				.println("Usage: -vm: <VM-name> -url: <url:port> -user: <user> -passwd: <password>");
-
+		System.out.println("Usage: -vm [VM-name] -url [url:port] -user [user] -passwd [password] -debug");
+		System.out.println("Note 1: The VM cannot have spaces in its name.");
+		System.out.println("Note 2: If no VM is specified the 1st VM in the list of VirtualBox will be picked.");
+		System.out.println("Note 3: Any parameters that aren't specified wll be replaced by default values:");
+		System.out.println("-vm "+null+"(1st VM) -url "+url+" -user "+user+" -password (blank) and no debug mode.");
+		
 		for (int i = 0; i < args.length; i++) {
 			if ("-vm".equalsIgnoreCase(args[i])) {
 				vm = args[++i];
@@ -46,7 +51,7 @@ public class Starter {
 				user = args[++i];
 			} else if ("-passwd".equalsIgnoreCase(args[i])) {
 				passwd = args[++i];
-			} else if ("-d".equalsIgnoreCase(args[i])) {
+			} else if ("-debug".equalsIgnoreCase(args[i])) {
 				debug = true;
 			}
 		}
@@ -58,7 +63,7 @@ public class Starter {
 		} else {
 			ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory
 					.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-			root.setLevel(Level.OFF);
+			root.setLevel(Level.INFO);
 		}
 
 		LOGGER.debug("-vm: {} -url: {} -user: {} -passwd: {}", vm, url, user,
@@ -170,6 +175,7 @@ public class Starter {
 				Recorder recorder = new Recorder(machine);
 
 				while (true) {
+					Set<String> names = new HashSet<String>();
 					boolean takeScreenshotOnMouseclick = false;
 					try {
 						System.out
@@ -189,10 +195,20 @@ public class Starter {
 					try {
 						in.readLine();
 						recorder.stopRecording();
-
-						System.out
-								.println("Enter description of the recording: ");
-						line = in.readLine();
+						
+						boolean desc_ok = false;
+						while(!desc_ok) {
+							System.out.println("Enter description of the recording: ");
+							line = in.readLine();
+							if (names.contains(line) || line == null || line.equals("")) {
+								desc_ok = false;
+								System.out.println("Invalid Description!");
+							} else {
+								names.add(line);
+								desc_ok = true;
+							}
+						}
+						
 						recorder.finishRecording(line);
 
 						System.out.println("Continue recording (Y/N)");

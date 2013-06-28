@@ -9,7 +9,7 @@
 		</encoder>
 	</appender>
 
-	<logger level="DEBUG" additivity="false"
+	<logger level="INFO" additivity="false"
 		name="at.ac.tuwien.digitalpreservation">
 		<appender-ref ref="STDOUT" />
 	</logger>
