@@ -1,2 +1,2 @@
 REM starting Webservice for VirtualBox
-VBoxWebSrv.exe -v
+VBoxWebSrv.exe 

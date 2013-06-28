@@ -123,15 +123,15 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		me.setZDelta(event.getZ());
 		me.setMouseButtons(event.getButtons());
 		me.setType(EventTypeEnum.MOUSE_EVENT);
-		LOGGER.debug("Buttonmask: "+me.getMouseButtons());
-		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
-				.add(me);
+		//LOGGER.debug("handle(IGuestMouseEvent event): Buttonmask: "+me.getMouseButtons());
 
 		if (me.getMouseButtons() > 0) {
 			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
-				this.addScreenshotEvent(me.getTimeOffset());
+				this.addScreenshotEvent(me.getTimeOffset()-1000);
 			}
 		}
+		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
+		.add(me);
 		/*me.getMouseButtons().addAll(
 				MouseButtonEnum.getClicked(event.getButtons()));
 		me.setType(EventTypeEnum.MOUSE_EVENT);

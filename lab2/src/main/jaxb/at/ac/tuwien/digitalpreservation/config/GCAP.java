@@ -109,8 +109,8 @@ public class GCAP
     
     public void postprocess() {
     	for (Recording r : this.recording) {
-    		r.sort();
-    		//r.postprocess();
+    		//r.sort();
+    		r.postprocess();
     	}
     }
 
