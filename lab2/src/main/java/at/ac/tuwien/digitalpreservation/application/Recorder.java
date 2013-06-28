@@ -1,6 +1,9 @@
 package at.ac.tuwien.digitalpreservation.application;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -72,13 +75,20 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		this.recordingStart = 0;
 	}
 
-	public void saveGCAP(Path directoryPath, String gcapName) {
+	public void saveGCAP(Path directoryPath, String gcapName)
+			throws IOException {
 		if (this.currentRecording != null) {
 			throw new IllegalStateException(
 					"Finish Recording before saving GCAP file");
 		}
 		this.gcap.postprocess();
+
+		if (!Files.isDirectory(directoryPath)) {
+			throw new NotDirectoryException("Path " + directoryPath
+					+ " is not a directory");
+		}
 		this.gcap.setName(gcapName);
+
 		ConfigurationUtils.marshal(this.gcap,
 				directoryPath.resolve(gcapName + ".xml").toFile());
 	}
