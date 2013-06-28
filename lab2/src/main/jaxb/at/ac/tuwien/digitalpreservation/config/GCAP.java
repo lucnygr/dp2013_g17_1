@@ -107,9 +107,10 @@ public class GCAP
         return this.recording;
     }
     
-    public void sort() {
+    public void postprocess() {
     	for (Recording r : this.recording) {
     		r.sort();
+    		//r.postprocess();
     	}
     }
 

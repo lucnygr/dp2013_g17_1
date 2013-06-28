@@ -77,7 +77,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 			throw new IllegalStateException(
 					"Finish Recording before saving GCAP file");
 		}
-		this.gcap.sort();
+		this.gcap.postprocess();
 		this.gcap.setName(gcapName);
 		ConfigurationUtils.marshal(this.gcap,
 				directoryPath.resolve(gcapName + ".xml").toFile());
@@ -123,6 +123,7 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		me.setZDelta(event.getZ());
 		me.setMouseButtons(event.getButtons());
 		me.setType(EventTypeEnum.MOUSE_EVENT);
+		LOGGER.debug("Buttonmask: "+me.getMouseButtons());
 		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
 				.add(me);
 
