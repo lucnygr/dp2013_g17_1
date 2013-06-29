@@ -70,42 +70,23 @@ public class VirtualMachine {
 	}
 
 	private class KeepAwake extends Thread {
-		private class Timer extends Thread {
-			private KeepAwake o;
-			private long millis;
-			public Timer(KeepAwake o, long millis) {
-				this.o = o;
-				this.millis = millis;
-			}
-			public void run() {
-				try {
-					Thread.sleep(millis);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				synchronized(this) {
-					if (o != null) {
-						o.poke();
-					}
-				}
-			}
-		}
+
 		private ISession session;
-		boolean running = true;
+
+		private boolean running = true;
+
 		public KeepAwake(ISession s) {
 			this.session = s;
 		}
+
 		public void run() {
-			while(running) {
+			while (running) {
 				session.getState();
 				session.getMachine().getCPUCount();
 
-				Timer t = new Timer(this, 10000);
-				t.start();
-				synchronized(this) {
+				synchronized (this) {
 					try {
-						wait();
+						wait(10000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -116,10 +97,6 @@ public class VirtualMachine {
 
 		public synchronized void close() {
 			this.running = false;
-			notifyAll();
-		}
-		
-		public synchronized void poke() {
 			notifyAll();
 		}
 	}
@@ -201,10 +178,17 @@ public class VirtualMachine {
 		}
 		this.keepAwake.close();
 		if (this.console != null) {
-			IProgress progress = this.console.powerDown();
-			progress.waitForCompletion(30000);
-			if (progress.getResultCode() != 0) {
-				LOGGER.error("problems with shutting down the virtual machine");
+			try {
+				IProgress progress = this.console.powerDown();
+				progress.waitForCompletion(30000);
+				if (progress.getResultCode() != 0) {
+					System.err
+							.println("problems with shutting down the virtual machine");
+				}
+			} catch (VBoxException e) {
+				System.err
+						.println("problems with shutting down the virtual machine");
+				LOGGER.error(e.getMessage(), e);
 			}
 		}
 		if (this.manager != null) {
@@ -256,11 +240,12 @@ public class VirtualMachine {
 	}
 
 	public void putMouseEvent(MouseEvent ev) {
-		/*m.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(),
-				ev.getZDelta(), ev.getWDelta(),
-				MouseButtonEnum.getClicked(ev.getMouseButtons()));*/
+		/*
+		 * m.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(),
+		 * ev.getZDelta(), ev.getWDelta(),
+		 * MouseButtonEnum.getClicked(ev.getMouseButtons()));
+		 */
 		mouse.putMouseEventAbsolute(ev.getXPosition(), ev.getYPosition(),
-				ev.getZDelta(), ev.getWDelta(),
-				ev.getMouseButtons());
+				ev.getZDelta(), ev.getWDelta(), ev.getMouseButtons());
 	}
 }

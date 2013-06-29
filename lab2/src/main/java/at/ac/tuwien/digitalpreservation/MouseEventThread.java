@@ -24,7 +24,7 @@ public class MouseEventThread extends Thread {
 	private IEventSource es = null;
 	private IEventListener listener = null;
 	private boolean running = true;
-	
+
 	private IConsole console = null;
 
 	private List<MouseEventHandler> mouseEventHandler = new ArrayList<>();
@@ -32,10 +32,10 @@ public class MouseEventThread extends Thread {
 	public MouseEventThread(IConsole console) {
 		this.console = console;
 		this.init();
-		
+
 		LOGGER.debug("MouseEventThread initialized");
 	}
-	
+
 	/**
 	 * Call on creation and to reinitialize
 	 */
@@ -59,9 +59,10 @@ public class MouseEventThread extends Thread {
 			if (!this.mouseEventHandler.isEmpty()) {
 				try {
 
-					IEvent ev = this.es.getEvent(listener, 0);
+					IEvent ev = this.es.getEvent(listener, 1);
 					if (ev != null) {
-						IGuestMouseEvent event = IGuestMouseEvent.queryInterface(ev);
+						IGuestMouseEvent event = IGuestMouseEvent
+								.queryInterface(ev);
 						for (MouseEventHandler h : this.mouseEventHandler) {
 							h.handle(event);
 						}
@@ -69,18 +70,21 @@ public class MouseEventThread extends Thread {
 					}
 				} catch (VBoxException e) {
 					e.printStackTrace();
-					LOGGER.error("Error in MouseEventThread.run: "+e.getMessage());
+					LOGGER.error("Error in MouseEventThread.run: "
+							+ e.getMessage());
 					try {
-						this.es.registerListener(listener,Arrays.asList(VBoxEventType.OnGuestMouse), false);
+						this.es.registerListener(listener,
+								Arrays.asList(VBoxEventType.OnGuestMouse),
+								false);
 					} catch (VBoxException v) {
 						init();
 					}
-					
+
 				}
 			} else {
 				this.es.unregisterListener(this.listener);
 				LOGGER.debug("waiting...");
-				synchronized(this) {
+				synchronized (this) {
 					try {
 						wait();
 					} catch (InterruptedException e) {
@@ -90,7 +94,8 @@ public class MouseEventThread extends Thread {
 				}
 				LOGGER.debug("continuing");
 				try {
-					this.es.registerListener(listener,Arrays.asList(VBoxEventType.OnGuestMouse), false);
+					this.es.registerListener(listener,
+							Arrays.asList(VBoxEventType.OnGuestMouse), false);
 				} catch (VBoxException v) {
 					init();
 				}
