@@ -46,9 +46,11 @@ public class VirtualMachine {
 	private ISession session;
 
 	private IConsole console;
-	
+
 	private IKeyboard keyboard;
 	private IMouse mouse;
+
+	private KeepAwake keepAwake = null; // keeps the machine from disconnecting
 
 	// ----------------- Event Thread section
 	private KeyboardEventThread keyboardEventThread;
@@ -65,6 +67,61 @@ public class VirtualMachine {
 		this.machineName = machineName;
 		this.username = username;
 		this.password = password;
+	}
+
+	private class KeepAwake extends Thread {
+		private class Timer extends Thread {
+			private KeepAwake o;
+			private long millis;
+			public Timer(KeepAwake o, long millis) {
+				this.o = o;
+				this.millis = millis;
+			}
+			public void run() {
+				try {
+					Thread.sleep(millis);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				synchronized(this) {
+					if (o != null) {
+						o.poke();
+					}
+				}
+			}
+		}
+		private ISession session;
+		boolean running = true;
+		public KeepAwake(ISession s) {
+			this.session = s;
+		}
+		public void run() {
+			while(running) {
+				session.getState();
+				session.getMachine().getCPUCount();
+
+				Timer t = new Timer(this, 10000);
+				t.start();
+				synchronized(this) {
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		public synchronized void close() {
+			this.running = false;
+			notifyAll();
+		}
+		
+		public synchronized void poke() {
+			notifyAll();
+		}
 	}
 
 	public boolean init() {
@@ -90,7 +147,7 @@ public class VirtualMachine {
 			LOGGER.debug("No Machine name given. Picking first VM");
 			this.machine = this.virtualBox.getMachines().get(0);
 		}
-		
+
 		if (this.machine == null) {
 			throw new IllegalStateException("Machine " + this.machineName
 					+ " not found");
@@ -124,6 +181,9 @@ public class VirtualMachine {
 		this.mouseEventThread.start();
 		this.keyboard = this.console.getKeyboard();
 		this.mouse = this.console.getMouse();
+
+		this.keepAwake = new KeepAwake(this.session);
+		this.keepAwake.start();
 		return true;
 	}
 
@@ -139,6 +199,7 @@ public class VirtualMachine {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 		}
+		this.keepAwake.close();
 		if (this.console != null) {
 			IProgress progress = this.console.powerDown();
 			progress.waitForCompletion(30000);

@@ -12,6 +12,7 @@ import org.virtualbox_4_2.IEventListener;
 import org.virtualbox_4_2.IEventSource;
 import org.virtualbox_4_2.IGuestKeyboardEvent;
 import org.virtualbox_4_2.VBoxEventType;
+import org.virtualbox_4_2.VBoxException;
 
 import at.ac.tuwien.digitalpreservation.handler.KeyboardEventHandler;
 
@@ -24,16 +25,27 @@ public class KeyboardEventThread extends Thread {
 	private IEventListener listener = null;
 	private boolean running = true;
 
+	private IConsole console = null;
+	
 	private List<KeyboardEventHandler> keyboardEventHandler = new ArrayList<>();
 
 	public KeyboardEventThread(IConsole console) {
+		this.console = console;
+		this.init();
+		LOGGER.debug("KeyboardEventThread initialized");
+	}
+	
+	/**
+	 * Call on creation and to reinitialize
+	 */
+	private synchronized void init() {
+		LOGGER.debug("Initializing...");
 		this.es = console.getKeyboard().getEventSource();
 		this.listener = this.es.createListener();
 		this.es.registerListener(listener,
 				Arrays.asList(VBoxEventType.OnGuestKeyboard), false);
-		LOGGER.debug("KeyboardEventThread initialized");
 	}
-
+	
 	public synchronized void close() {
 		this.running = false;
 		LOGGER.debug("Closing KeyboardEventThread");
@@ -65,8 +77,11 @@ public class KeyboardEventThread extends Thread {
 					}
 				}
 				LOGGER.debug("continuing");
-				this.es.registerListener(listener,
-						Arrays.asList(VBoxEventType.OnGuestKeyboard), false);
+				try {
+					this.es.registerListener(listener,Arrays.asList(VBoxEventType.OnGuestKeyboard), false);
+				} catch (VBoxException v) {
+					init();
+				}
 			}
 		}
 		this.es.unregisterListener(this.listener);

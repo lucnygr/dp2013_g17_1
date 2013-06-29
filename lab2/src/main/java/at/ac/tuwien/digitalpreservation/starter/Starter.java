@@ -7,9 +7,10 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,14 @@ public class Starter {
 		String passwd = "";
 		boolean debug = false;
 		System.out
-				.println("Usage: -vm: <VM-name> -url: <url:port> -user: <user> -passwd: <password>");
+				.println("Usage: -vm [VM-name] -url [url:port] -user [user] -passwd [password] -debug");
+		System.out.println("Note 1: The VM cannot have spaces in its name.");
+		System.out
+				.println("Note 2: If no VM is specified the 1st VM in the list of VirtualBox will be picked.");
+		System.out
+				.println("Note 3: Any parameters that aren't specified wll be replaced by default values:");
+		System.out.println("-vm " + null + "(1st VM) -url " + url + " -user "
+				+ user + " -password (blank) and no debug mode.");
 
 		for (int i = 0; i < args.length; i++) {
 			if ("-vm".equalsIgnoreCase(args[i])) {
@@ -48,7 +56,7 @@ public class Starter {
 				user = args[++i];
 			} else if ("-passwd".equalsIgnoreCase(args[i])) {
 				passwd = args[++i];
-			} else if ("-d".equalsIgnoreCase(args[i])) {
+			} else if ("-debug".equalsIgnoreCase(args[i])) {
 				debug = true;
 			}
 		}
@@ -60,7 +68,7 @@ public class Starter {
 		} else {
 			ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory
 					.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-			root.setLevel(Level.OFF);
+			root.setLevel(Level.INFO);
 		}
 
 		LOGGER.debug("-vm: {} -url: {} -user: {} -passwd: {}", vm, url, user,
@@ -81,11 +89,9 @@ public class Starter {
 		System.out.println("Ready. Type \"help\" for a list of commands");
 		mainLoop: while (running) {
 			System.out.println("Enter command:");
-			String line = "";
-			try {
-				line = in.readLine();
-			} catch (IOException e) {
-				LOGGER.error("Error reading input", e);
+			String line = readLine(in);
+			if (line == null) {
+				continue;
 			}
 
 			if ("exit".equalsIgnoreCase(line)) {
@@ -133,12 +139,9 @@ public class Starter {
 						}
 						System.out
 								.println("Enter \"back\" to go back to the main menu.");
-						String choice = null;
-						try {
-							choice = in.readLine();
-						} catch (IOException e) {
-							e.printStackTrace();
-							break;
+						String choice = readLine(in);
+						if (choice == null) {
+							continue mainLoop;
 						}
 						if ("back".equalsIgnoreCase(choice)) {
 							break;
@@ -161,12 +164,10 @@ public class Starter {
 						if (!valid) {
 							System.out.println("There is no such recording");
 						}
-
 					}
 				} catch (IOException e) {
 
 				}
-				continue;
 			} else if ("record".equalsIgnoreCase(command)) {
 				if (!tok.hasMoreTokens()) {
 					System.out
@@ -179,34 +180,50 @@ public class Starter {
 				Recorder recorder = new Recorder(machine);
 
 				while (true) {
+					Set<String> names = new HashSet<String>();
 					boolean takeScreenshotOnMouseclick = false;
-					try {
-						System.out
-								.println("Take screenshot on mouseclick events (Y/N)");
-						line = in.readLine();
-						if ("y".equalsIgnoreCase(line)) {
-							takeScreenshotOnMouseclick = true;
-						}
-
-						System.out.println("Press enter to start recording");
-						in.readLine();
-					} catch (IOException e) {
-						System.err
-								.println("An error occured. Continue in main programm.");
-						LOGGER.error(e.getMessage(), e);
+					System.out
+							.println("Take screenshot on mouseclick events (Y/N)");
+					line = readLine(in);
+					if (line == null) {
 						continue mainLoop;
 					}
+					if ("y".equalsIgnoreCase(line)) {
+						takeScreenshotOnMouseclick = true;
+						System.out
+								.println("Making screenshot on each mouseclick event");
+					} else {
+						System.out
+								.println("No screenshot are made on mouseclick events");
+					}
+
+					System.out.println("Press enter to start recording");
+					line = readLine(in);
+					if (line == null) {
+						continue mainLoop;
+					}
+
 					recorder.startRecording(takeScreenshotOnMouseclick);
 					System.out.println("Press enter to stop recording");
 					if (readLine(in) == null) {
+						recorder.stopRecording();
 						continue mainLoop;
 					}
-
 					recorder.stopRecording();
 
-					System.out.println("Enter description of the recording: ");
-					if (readLine(in) == null) {
-						continue mainLoop;
+					boolean desc_ok = false;
+					while (!desc_ok) {
+						System.out
+								.println("Enter description of the recording: ");
+						line = readLine(in);
+						if (names.contains(line) || line == null
+								|| line.trim().length() == 0) {
+							desc_ok = false;
+							System.out.println("Invalid Description!");
+						} else {
+							names.add(line);
+							desc_ok = true;
+						}
 					}
 
 					recorder.finishRecording(line);
@@ -232,11 +249,8 @@ public class Starter {
 					LOGGER.error("Could not save recording to directory"
 							+ GCAPPATH, e);
 				}
-
-				continue;
 			} else {
 				System.out.println("Invalid command");
-				continue;
 			}
 		}
 		try {

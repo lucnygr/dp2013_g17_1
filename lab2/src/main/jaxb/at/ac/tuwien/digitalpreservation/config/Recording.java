@@ -11,13 +11,20 @@ package at.ac.tuwien.digitalpreservation.config;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,105 +54,289 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "recording", propOrder = {
-    "description",
-    "keyboardEventOrMouseEventOrScreenshotEvent"
+		"description",
+		"keyboardEventOrMouseEventOrScreenshotEvent"
 })
 public class Recording
-    implements Serializable
+implements Serializable
 {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(Recording.class);
 
-    private final static long serialVersionUID = 1L;
-    @XmlElement(required = true)
-    protected String description;
-    @XmlElements({
-        @XmlElement(name = "keyboardEvent", type = KeyboardEvent.class),
-        @XmlElement(name = "mouseEvent", type = MouseEvent.class),
-        @XmlElement(name = "screenshotEvent", type = ScreenshotEvent.class)
-    })
-    protected List<AbstractEvent> keyboardEventOrMouseEventOrScreenshotEvent;
-    @XmlAttribute(name = "takeScreenshotOnMouseclickEvent")
-    protected Boolean takeScreenshotOnMouseclickEvent;
+	private final static long serialVersionUID = 1L;
+	@XmlElement(required = true)
+	protected String description;
+	@XmlElements({
+		@XmlElement(name = "keyboardEvent", type = KeyboardEvent.class),
+		@XmlElement(name = "mouseEvent", type = MouseEvent.class),
+		@XmlElement(name = "screenshotEvent", type = ScreenshotEvent.class)
+	})
+	protected List<AbstractEvent> keyboardEventOrMouseEventOrScreenshotEvent = new ArrayList<AbstractEvent>();
+	@XmlAttribute(name = "takeScreenshotOnMouseclickEvent")
+	protected Boolean takeScreenshotOnMouseclickEvent;
 
-    /**
-     * Gets the value of the description property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * Gets the value of the description property.
+	 * 
+	 * @return
+	 *     possible object is
+	 *     {@link String }
+	 *     
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    /**
-     * Sets the value of the description property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDescription(String value) {
-        this.description = value;
-    }
+	/**
+	 * Sets the value of the description property.
+	 * 
+	 * @param value
+	 *     allowed object is
+	 *     {@link String }
+	 *     
+	 */
+	public void setDescription(String value) {
+		this.description = value;
+	}
 
-    /**
-     * Gets the value of the keyboardEventOrMouseEventOrScreenshotEvent property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the keyboardEventOrMouseEventOrScreenshotEvent property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getKeyboardEventOrMouseEventOrScreenshotEvent().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link KeyboardEvent }
-     * {@link MouseEvent }
-     * {@link ScreenshotEvent }
-     * 
-     * 
-     */
-    public List<AbstractEvent> getKeyboardEventOrMouseEventOrScreenshotEvent() {
-        if (keyboardEventOrMouseEventOrScreenshotEvent == null) {
-            keyboardEventOrMouseEventOrScreenshotEvent = new ArrayList<AbstractEvent>();
-        }
-        return this.keyboardEventOrMouseEventOrScreenshotEvent;
-    }
+	/**
+	 * Gets the value of the keyboardEventOrMouseEventOrScreenshotEvent property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list,
+	 * not a snapshot. Therefore any modification you make to the
+	 * returned list will be present inside the JAXB object.
+	 * This is why there is not a <CODE>set</CODE> method for the keyboardEventOrMouseEventOrScreenshotEvent property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * <pre>
+	 *    getKeyboardEventOrMouseEventOrScreenshotEvent().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list
+	 * {@link KeyboardEvent }
+	 * {@link MouseEvent }
+	 * {@link ScreenshotEvent }
+	 * 
+	 * 
+	 */
+	public List<AbstractEvent> getKeyboardEventOrMouseEventOrScreenshotEvent() {
+		if (keyboardEventOrMouseEventOrScreenshotEvent == null) {
+			keyboardEventOrMouseEventOrScreenshotEvent = new ArrayList<AbstractEvent>();
+		}
+		return this.keyboardEventOrMouseEventOrScreenshotEvent;
+	}
 
-    /**
-     * Gets the value of the takeScreenshotOnMouseclickEvent property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isTakeScreenshotOnMouseclickEvent() {
-        return takeScreenshotOnMouseclickEvent;
-    }
+	/**
+	 * Gets the value of the takeScreenshotOnMouseclickEvent property.
+	 * 
+	 * @return
+	 *     possible object is
+	 *     {@link Boolean }
+	 *     
+	 */
+	public Boolean isTakeScreenshotOnMouseclickEvent() {
+		return takeScreenshotOnMouseclickEvent;
+	}
 
-    /**
-     * Sets the value of the takeScreenshotOnMouseclickEvent property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setTakeScreenshotOnMouseclickEvent(Boolean value) {
-        this.takeScreenshotOnMouseclickEvent = value;
-    }
-    public void sort() {
-    	if (this.keyboardEventOrMouseEventOrScreenshotEvent != null)
-    		Collections.sort(this.keyboardEventOrMouseEventOrScreenshotEvent);
-    }
+	/**
+	 * Sets the value of the takeScreenshotOnMouseclickEvent property.
+	 * 
+	 * @param value
+	 *     allowed object is
+	 *     {@link Boolean }
+	 *     
+	 */
+	public void setTakeScreenshotOnMouseclickEvent(Boolean value) {
+		this.takeScreenshotOnMouseclickEvent = value;
+	}
+	public void sort() {
+		if (this.keyboardEventOrMouseEventOrScreenshotEvent != null)
+			Collections.sort(this.keyboardEventOrMouseEventOrScreenshotEvent);
+	}
+
+	/**
+	 * Filters Double-mouseclicks
+	 * Filters Mousedrags
+	 * 
+	 */
+	public void postprocess() {
+		this.sort();
+		final long MINIMUM_SCREENSHOT_TIME_DIFFERENCE = 1000000000;
+		//final long MINIMUM_DRAG_DIFFERENCE = 200000000;
+		boolean currently_drag_l = false;
+		boolean currently_drag_m = false;
+		boolean currently_drag_r = false;
+		boolean currently_doubleclick_l = false;
+		boolean currently_doubleclick_m = false;
+		boolean currently_doubleclick_r = false;
+		long timeLastScreenshot = 0;
+		//long lastLMB = 0; // last time LMB was down
+		//long lastRMB = 0; // last time RMB was down
+		//long lastMMB = 0; // last time MMB was down
+		//MouseEvent lm = null; // last mouse event
+		int numRemovedScreenshotEvents = 0;
+		//List<AbstractEvent> output = new ArrayList<AbstractEvent>();
+		List<KeyboardEvent> o_keyboard = new ArrayList<KeyboardEvent>();
+		List<MouseEvent> o_mouse = new ArrayList<MouseEvent>();
+		List<ScreenshotEvent> o_screen = new ArrayList<ScreenshotEvent>();
+		for (AbstractEvent e : keyboardEventOrMouseEventOrScreenshotEvent) {
+			switch(e.type) {
+			case KEYBOARD_EVENT:
+				o_keyboard.add((KeyboardEvent)e);
+				break;
+			case MOUSE_EVENT:
+				// LEFT(1), RIGHT(2), MIDDLE(4);
+				/*
+    			 	public boolean isClicked(int bitmap) {
+						int result = this.bitmap & bitmap;
+						if (result == 0) {
+							return false;
+						}
+						return true;
+					}
+				 */
+				MouseEvent me = (MouseEvent)e;
+
+				o_mouse.add(me);
+				/*if ((me.mouseButtons & 1) != 0) { // LEFT
+					if (o_mouse.size() >0 && (o_mouse.get(o_mouse.size()-1).mouseButtons & 1) != 0) {
+						currently_drag_l = true;
+						if (me.timeOffset-o_mouse.get(o_mouse.size()-1).timeOffset >= MINIMUM_DRAG_DIFFERENCE) {
+							o_mouse.add((MouseEvent)e);
+						} else {
+							LOGGER.debug(me.timeOffset-o_mouse.get(o_mouse.size()-1).timeOffset + " not added");
+						}
+					} else {
+						currently_drag_l = false;
+						lastLMB = me.timeOffset;
+					}
+				}
+				if ((me.mouseButtons & 1) == 0) { // !LEFT
+					if (lm != null && (lm.mouseButtons & 1) != 0 && currently_drag_l) {
+						if (o_mouse.size() >0 && lm != o_mouse.get(o_mouse.size()-1));
+						o_mouse.add(lm);
+					}
+					currently_drag_l = false;
+					o_mouse.add(me);
+				}
+
+				if ((me.mouseButtons & 2) != 0) { // RIGHT
+					if (o_mouse.size() >0 && (o_mouse.get(o_mouse.size()-1).mouseButtons & 2) != 0) {
+						currently_drag_r = true;
+						if (me.timeOffset-o_mouse.get(o_mouse.size()-1).timeOffset >= MINIMUM_DRAG_DIFFERENCE) {
+							o_mouse.add((MouseEvent)e);
+						}
+					} else {
+						currently_drag_r = false;
+						lastRMB = me.timeOffset;
+					}
+				}
+				if ((me.mouseButtons & 2) == 0) { // !RIGHT
+					if (lm != null && (lm.mouseButtons & 2) != 0 && currently_drag_r) {
+						if (o_mouse.size() >0 && lm != o_mouse.get(o_mouse.size()-1));
+						o_mouse.add(lm);
+					}
+					currently_drag_r = false;
+					o_mouse.add(me);
+				}
+
+				if ((me.mouseButtons & 4) != 0) { // MIDDLE
+					if (o_mouse.size() >0 && (o_mouse.get(o_mouse.size()-1).mouseButtons & 4) != 0) {
+						currently_drag_m = true;
+						if (me.timeOffset-o_mouse.get(o_mouse.size()-1).timeOffset >= MINIMUM_DRAG_DIFFERENCE) {
+							o_mouse.add((MouseEvent)e);
+						}
+					} else {
+						currently_drag_m = false;
+						lastMMB = me.timeOffset;
+					}
+				}
+				if ((me.mouseButtons & 4) == 0) { // !MIDDLE
+					if (lm != null && (lm.mouseButtons & 4) != 0 && currently_drag_m) {
+						if (o_mouse.size() >0 && lm != o_mouse.get(o_mouse.size()-1));
+						o_mouse.add(lm);
+					}
+					currently_drag_m = false;
+					o_mouse.add(me);
+				}*/
+				//lm = me;
+				break;
+			case SCREENSHOT_EVENT:
+				if (!currently_drag_l && !currently_drag_m && !currently_drag_r && 
+						!currently_doubleclick_l && !currently_doubleclick_m && !currently_doubleclick_r) {
+					if (e.timeOffset-timeLastScreenshot >= MINIMUM_SCREENSHOT_TIME_DIFFERENCE) {
+						o_screen.add((ScreenshotEvent)e);
+						timeLastScreenshot = e.timeOffset;
+					} else {
+						numRemovedScreenshotEvents++;
+						//LOGGER.debug("Not Adding ScreenshotEvent "+e.toString() + " because it is too close to another ScreenshotEvent.");
+					}
+				} else {
+					numRemovedScreenshotEvents++;
+					String log = "Not Adding ScreenshotEvent "+e.toString();
+					if (currently_drag_l) {
+						log += " because LMB is dragging";
+					}
+					if (currently_drag_m) {
+						log += " because MMB is dragging";
+					}
+					if (currently_drag_r) {
+						log += " because RMB is dragging";
+					}
+					if (currently_doubleclick_l) {
+						log += " because LMB is doubleclicking";
+					}
+					if (currently_doubleclick_m) {
+						log += " because MMB is doubleclicking";
+					}
+					if (currently_doubleclick_r) {
+						log += " because RMB is doubleclicking";
+					}
+					LOGGER.debug(log);
+				}
+				break;
+			default:
+				LOGGER.error("invalid EventTypeEnum! "+e.type.toString());
+				continue;
+			} // switch
+		} // for
+		LOGGER.debug("Postprocessing done. Removed "+numRemovedScreenshotEvents+" ScreenshotEvents");
+		this.keyboardEventOrMouseEventOrScreenshotEvent = new ArrayList<AbstractEvent>();
+
+		// remove doubles
+		removeDoubles(o_mouse);
+		removeDoubles(o_keyboard);
+		removeDoubles(o_screen);
+		
+		// merge
+		for (AbstractEvent e : o_mouse) {
+			this.keyboardEventOrMouseEventOrScreenshotEvent.add(e);
+		}
+		for (AbstractEvent e : o_keyboard) {
+			this.keyboardEventOrMouseEventOrScreenshotEvent.add(e);
+		}
+		for (AbstractEvent e : o_screen) {
+			this.keyboardEventOrMouseEventOrScreenshotEvent.add(e);
+		}
+		this.sort();
+
+
+
+	}
+	
+	public static <T> void removeDoubles(List<T> list) {  
+		Set<T> set = new HashSet<T>();  
+		List<T> newList = new ArrayList<T>();  
+		for (Iterator<T> iter = list.iterator(); iter.hasNext(); ) {  
+			T element = iter.next();  
+			if (set.add(element))  
+				newList.add(element);  
+		}  
+		list.clear();  
+		list.addAll(newList);  
+	}
 }

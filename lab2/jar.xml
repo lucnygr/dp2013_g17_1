@@ -17,5 +17,7 @@
             <zipfileset dir="C:\Users\CLF\.m2\repository\ch\qos\logback\logback-classic\1.0.13" includes="logback-classic-1.0.13.jar"/>
             <zipfileset dir="C:\Users\CLF\.m2\repository\ch\qos\logback\logback-core\1.0.13" includes="logback-core-1.0.13.jar"/>
         </jar>
+    	<copy file="scripts/launch.bat" todir="target/JAR/"/>
+    	<copy file="scripts/start_webservice.bat" todir="target/JAR/"/>
     </target>
 </project>

@@ -81,13 +81,12 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 			throw new IllegalStateException(
 					"Finish Recording before saving GCAP file");
 		}
+		this.gcap.postprocess();
 
 		if (!Files.isDirectory(directoryPath)) {
 			throw new NotDirectoryException("Path " + directoryPath
 					+ " is not a directory");
 		}
-
-		this.gcap.sort();
 		this.gcap.setName(gcapName);
 
 		ConfigurationUtils.marshal(this.gcap,
@@ -134,25 +133,26 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		me.setZDelta(event.getZ());
 		me.setMouseButtons(event.getButtons());
 		me.setType(EventTypeEnum.MOUSE_EVENT);
-		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
-				.add(me);
+		//LOGGER.debug("handle(IGuestMouseEvent event): Buttonmask: "+me.getMouseButtons());
 
 		if (me.getMouseButtons() > 0) {
 			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
-				this.addScreenshotEvent(me.getTimeOffset());
+				this.addScreenshotEvent(me.getTimeOffset()-1000);
 			}
 		}
-		/*
-		 * me.getMouseButtons().addAll(
-		 * MouseButtonEnum.getClicked(event.getButtons()));
-		 * me.setType(EventTypeEnum.MOUSE_EVENT);
-		 * this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
-		 * .add(me);
-		 * 
-		 * if (me.getMouseButtons().size() > 0) { if
-		 * (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
-		 * this.addScreenshotEvent(me.getTimeOffset()); } }
-		 */
+		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
+		.add(me);
+		/*me.getMouseButtons().addAll(
+				MouseButtonEnum.getClicked(event.getButtons()));
+		me.setType(EventTypeEnum.MOUSE_EVENT);
+		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
+				.add(me);
+
+		if (me.getMouseButtons().size() > 0) {
+			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
+				this.addScreenshotEvent(me.getTimeOffset());
+			}
+		}*/
 	}
 
 	private void addScreenshotEvent(long offset) {
