@@ -4,10 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +79,7 @@ public class Starter {
 		BufferedReader in = new BufferedReader(reader);
 
 		System.out.println("Ready. Type \"help\" for a list of commands");
-		while (running) {
+		mainLoop: while (running) {
 			System.out.println("Enter command:");
 			String line = "";
 			try {
@@ -110,51 +112,58 @@ public class Starter {
 				}
 
 				String name = tok.nextToken();
-				File gcap = new File(GCAPPATH + name + ".xml");
-				if (!gcap.isFile()) {
-					System.out.println("There is no GCAP named \"" + name
-							+ "\"");
-					continue;
-				}
 
-				while (true) {
-					Player player = new Player(gcap, machine);
-					List<String> recs = player.getRecordingTitles();
-					System.out
-							.println("Choose one of the following recordings:");
-					for (String s : recs) {
-						System.out.println("  " + s);
+				try {
+					Path saveDir = PathUtils.createDirectoryRecursive(Paths
+							.get(GCAPPATH));
+					Path gcapPath = saveDir.resolve(name + ".xml");
+					if (Files.notExists(gcapPath)) {
+						System.out.println("There is no GCAP named \"" + name
+								+ "\"");
+						continue;
 					}
-					System.out
-							.println("Enter \"back\" to go back to the main menu.");
-					String choice = null;
-					try {
-						choice = in.readLine();
-					} catch (IOException e) {
-						e.printStackTrace();
-						break;
-					}
-					if ("back".equalsIgnoreCase(choice)) {
-						break;
-					}
-					boolean valid = false;
-					for (String s : recs) {
-						if (s.equalsIgnoreCase(choice)) {
-							player.play(s);
-							System.out.println("playing " + name + " - "
-									+ choice + " ...");
-							while (player.isPlaying()) {
-								// System.out.print(".");
 
-							}
-							System.out.println("\ndone");
-							valid = true;
+					while (true) {
+						Player player = new Player(gcapPath.toFile(), machine);
+						List<String> recs = player.getRecordingTitles();
+						System.out
+								.println("Choose one of the following recordings:");
+						for (String s : recs) {
+							System.out.println("  " + s);
+						}
+						System.out
+								.println("Enter \"back\" to go back to the main menu.");
+						String choice = null;
+						try {
+							choice = in.readLine();
+						} catch (IOException e) {
+							e.printStackTrace();
 							break;
 						}
+						if ("back".equalsIgnoreCase(choice)) {
+							break;
+						}
+						boolean valid = false;
+						for (String s : recs) {
+							if (s.equalsIgnoreCase(choice)) {
+								player.play(s);
+								System.out.println("playing " + name + " - "
+										+ choice + " ...");
+								while (player.isPlaying()) {
+									// System.out.print(".");
+
+								}
+								System.out.println("\ndone");
+								valid = true;
+								break;
+							}
+						}
+						if (!valid) {
+							System.out.println("There is no such recording");
+						}
+
 					}
-					if (!valid) {
-						System.out.println("There is no such recording");
-					}
+				} catch (IOException e) {
 
 				}
 				continue;
@@ -181,29 +190,35 @@ public class Starter {
 
 						System.out.println("Press enter to start recording");
 						in.readLine();
-					} catch (IOException e1) {
-						e1.printStackTrace();
+					} catch (IOException e) {
+						System.err
+								.println("An error occured. Continue in main programm.");
+						LOGGER.error(e.getMessage(), e);
+						continue mainLoop;
 					}
 					recorder.startRecording(takeScreenshotOnMouseclick);
 					System.out.println("Press enter to stop recording");
-					try {
-						in.readLine();
-						recorder.stopRecording();
-
-						System.out
-								.println("Enter description of the recording: ");
-						line = in.readLine();
-						recorder.finishRecording(line);
-
-						System.out.println("Continue recording (Y/N)");
-						line = in.readLine();
-						if ("n".equalsIgnoreCase(line)) {
-							break;
-						}
-
-					} catch (IOException e) {
-						e.printStackTrace();
+					if (readLine(in) == null) {
+						continue mainLoop;
 					}
+
+					recorder.stopRecording();
+
+					System.out.println("Enter description of the recording: ");
+					if (readLine(in) == null) {
+						continue mainLoop;
+					}
+
+					recorder.finishRecording(line);
+
+					System.out.println("Continue recording (Y/N)");
+					line = readLine(in);
+					if (line == null) {
+						continue mainLoop;
+					} else if ("n".equalsIgnoreCase(line)) {
+						break;
+					}
+
 				}
 				System.out.println("Save recordings as " + name);
 				Path savePath;
@@ -231,6 +246,16 @@ public class Starter {
 		System.out.println("Shutting down VM...");
 		machine.destroy();
 		System.out.println("done");
+	}
+
+	private static String readLine(BufferedReader in) {
+		try {
+			return in.readLine();
+		} catch (IOException e) {
+			System.err.println("An error occured. Continue in main programm.");
+			LOGGER.error(e.getMessage(), e);
+			return null;
+		}
 	}
 
 	static boolean playRecording(VirtualMachine machine, File gcap,
