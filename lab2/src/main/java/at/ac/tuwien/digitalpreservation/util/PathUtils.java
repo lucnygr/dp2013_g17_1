@@ -6,11 +6,25 @@ import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-final public class PathUtils {
+/**
+ * This utility class contains utility-methods that handle Path-objects.
+ * 
+ * @author gregor
+ * 
+ */
+public final class PathUtils {
 
 	private PathUtils() {
 	}
 
+	/**
+	 * Gets or creates the given Path. If parent directories dont exist, this
+	 * method also creates them.
+	 * 
+	 * @param path
+	 * @return The Path object to the path it created.
+	 * @throws IOException
+	 */
 	public static Path createDirectoryRecursive(Path path) throws IOException {
 		if (path == null) {
 			return Paths.get(".");

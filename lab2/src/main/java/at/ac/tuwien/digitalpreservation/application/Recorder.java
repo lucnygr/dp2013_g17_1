@@ -54,6 +54,13 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		this.gcap = ConfigurationUtils.unmarshal(file);
 	}
 
+	/**
+	 * This method starts a recording. Use this before all other methods.
+	 * 
+	 * @param takeScreenshotOnMouseclickEvent
+	 *            wheter the recorder should take screenshots at mouseclicks or
+	 *            not.
+	 */
 	public void startRecording(boolean takeScreenshotOnMouseclickEvent) {
 		this.currentRecording = new Recording();
 		this.currentRecording
@@ -63,18 +70,37 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		this.virtualMachine.addMouseEventHandler(this);
 	}
 
+	/**
+	 * Stops a recording. This method must be invoked before
+	 * {@link Recorder#finishRecording(String)}.
+	 */
 	public void stopRecording() {
 		this.virtualMachine.removeKeyboardEventHandler(this);
 		this.virtualMachine.removeMouseEventHandler(this);
 		this.gcap.getRecording().add(this.currentRecording);
 	}
 
+	/**
+	 * Finishs a previosly stopped recording and resets the recorder for a new
+	 * recording.
+	 * 
+	 * @param description
+	 *            The description of the current recording.
+	 */
 	public void finishRecording(String description) {
 		this.currentRecording.setDescription(description);
 		this.currentRecording = null;
 		this.recordingStart = 0;
 	}
 
+	/**
+	 * Saves the recordings of the recorder in the directory path under the
+	 * given name.
+	 * 
+	 * @param directoryPath
+	 * @param gcapName
+	 * @throws IOException
+	 */
 	public void saveGCAP(Path directoryPath, String gcapName)
 			throws IOException {
 		if (this.currentRecording != null) {
@@ -133,26 +159,26 @@ public class Recorder implements KeyboardEventHandler, MouseEventHandler {
 		me.setZDelta(event.getZ());
 		me.setMouseButtons(event.getButtons());
 		me.setType(EventTypeEnum.MOUSE_EVENT);
-		//LOGGER.debug("handle(IGuestMouseEvent event): Buttonmask: "+me.getMouseButtons());
+		// LOGGER.debug("handle(IGuestMouseEvent event): Buttonmask: "+me.getMouseButtons());
 
 		if (me.getMouseButtons() > 0) {
 			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
-				this.addScreenshotEvent(me.getTimeOffset()-1000);
+				this.addScreenshotEvent(me.getTimeOffset() - 1000);
 			}
 		}
 		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
-		.add(me);
-		/*me.getMouseButtons().addAll(
-				MouseButtonEnum.getClicked(event.getButtons()));
-		me.setType(EventTypeEnum.MOUSE_EVENT);
-		this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
 				.add(me);
-
-		if (me.getMouseButtons().size() > 0) {
-			if (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
-				this.addScreenshotEvent(me.getTimeOffset());
-			}
-		}*/
+		/*
+		 * me.getMouseButtons().addAll(
+		 * MouseButtonEnum.getClicked(event.getButtons()));
+		 * me.setType(EventTypeEnum.MOUSE_EVENT);
+		 * this.currentRecording.getKeyboardEventOrMouseEventOrScreenshotEvent()
+		 * .add(me);
+		 * 
+		 * if (me.getMouseButtons().size() > 0) { if
+		 * (this.currentRecording.isTakeScreenshotOnMouseclickEvent()) {
+		 * this.addScreenshotEvent(me.getTimeOffset()); } }
+		 */
 	}
 
 	private void addScreenshotEvent(long offset) {

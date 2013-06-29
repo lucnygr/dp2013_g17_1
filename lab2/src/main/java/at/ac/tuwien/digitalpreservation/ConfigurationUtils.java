@@ -14,6 +14,13 @@ import at.ac.tuwien.digitalpreservation.config.MouseEvent;
 import at.ac.tuwien.digitalpreservation.config.Recording;
 import at.ac.tuwien.digitalpreservation.config.ScreenshotEvent;
 
+/**
+ * This utility class is responsible for storing and loading GCAP configurations
+ * from xml-files.
+ * 
+ * @author gregor
+ * 
+ */
 public final class ConfigurationUtils {
 
 	private ConfigurationUtils() {
@@ -29,6 +36,12 @@ public final class ConfigurationUtils {
 		}
 	}
 
+	/**
+	 * This method takes a xml-file and unmarshalls it as GCAP-object.
+	 * 
+	 * @param file
+	 * @return
+	 */
 	public static GCAP unmarshal(File file) {
 		try {
 			Unmarshaller unmarshaller = createContext().createUnmarshaller();
@@ -44,6 +57,13 @@ public final class ConfigurationUtils {
 		}
 	}
 
+	/**
+	 * This method takes a GCAP-object, marshalls it and writes it to the given
+	 * file.
+	 * 
+	 * @param gcap
+	 * @param file
+	 */
 	public static void marshal(GCAP gcap, File file) {
 		try {
 			Marshaller marshaller = createContext().createMarshaller();
