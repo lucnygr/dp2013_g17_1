@@ -9,6 +9,8 @@ import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import at.ac.tuwien.digitalpreservation.util.PathUtils;
+
 public class ReportGenerator {
 
 	private StringBuilder sb = new StringBuilder();
@@ -16,8 +18,7 @@ public class ReportGenerator {
 	private Path path;
 
 	public ReportGenerator(String path) throws IOException {
-		this.path = Paths.get(path);
-		Files.createDirectory(this.path);
+		this.path = PathUtils.createDirectoryRecursive(Paths.get(path));
 	}
 
 	private void startTag(String s) {
